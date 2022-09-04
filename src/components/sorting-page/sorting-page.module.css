@@ -20,4 +20,19 @@
 .output{
     display: flex;
     justify-content: center;
+    align-items: end;
+    margin-top: 48px;
+}
+.arrayItem{
+    background-color: #0032ff;
+    margin-right: 10px;
+    width: 50px;
+}
+
+@media screen and (max-width: 1023px) {
+    .arrayItem{
+        width: 30px;
+        margin-right: 6px;
+    }
+
 }
