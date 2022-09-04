@@ -5,6 +5,7 @@ import stringStyles from "../string/string.module.css";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
+import useMediaQuery from "../../hooks/useMediaQuery";
 
 export const FibonacciPage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -12,6 +13,8 @@ export const FibonacciPage: React.FC = () => {
   const [error, setError] = useState(false);
   const [done, setDone] = useState(true);
   const [step, setStep] = useState(0);
+
+  const isNotDesktop = useMediaQuery("(max-width: 1024px)");
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -61,14 +64,18 @@ export const FibonacciPage: React.FC = () => {
         <p className={stringStyles.text}>Максимальное число — 19</p>
       </form>
       {error && <p>Введите целое число от 0 до 19</p>}
-      <p>Step {step}</p>
-      <p>Array {array.toString()}</p>
       {step > 0 && (
         <section className={fibStyles.output}>
           {array.map((value, index) => {
             if (index + 1 > step) return;
             return (
-              <Circle key={index} index={index} letter={value.toString()} />
+              <Circle
+                key={index}
+                index={index}
+                letter={value.toString()}
+                isSmall={isNotDesktop}
+                extraClass={fibStyles.circle}
+              />
             );
           })}
         </section>
