@@ -1,0 +1,23 @@
+.container{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+.radio{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 50px;
+    width: 200px;
+}
+.method{
+    display: flex;
+    justify-content: space-between;
+    margin-right: 50px;
+    width: 362px;
+}
+
+.output{
+    display: flex;
+    justify-content: center;
+}
