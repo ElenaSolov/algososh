@@ -11,19 +11,20 @@ import { ElementStates } from "../../types/element-states";
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<number[]>([]);
   const [method, setMethod] = useState("selection");
-  const [direction, setDirection] = useState(Direction.Ascending);
+  const [direction, setDirection] = useState({
+    direction: Direction.Ascending,
+  });
   const [done, setDone] = useState(true);
   const [i, setI] = useState(-2);
   const [k, setK] = useState(-2);
   const [sorted, setSorted] = useState(false);
-
+  let gen = method === "bubble" ? bubbleSort() : selectionSort();
   useEffect(() => {
     setArray(getRandomArr());
   }, []);
 
   const onValueChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setMethod(evt.target.value);
-    console.log(method);
   };
   const reset = () => {
     setI(-2);
@@ -31,10 +32,13 @@ export const SortingPage: React.FC = () => {
     setSorted(false);
   };
   useEffect(() => {
+    reset();
+    gen = method === "bubble" ? bubbleSort() : selectionSort();
+  }, [direction, method]);
+  useEffect(() => {
     let setTimer: number | undefined;
     if (!done) {
       setTimer = window.setInterval(() => {
-        console.log(1);
         doStep();
       }, 1000);
     }
@@ -44,27 +48,22 @@ export const SortingPage: React.FC = () => {
     return () => window.clearInterval(setTimer);
   }, [done]);
 
-  const onClick = () => {
-    console.log(method);
-    reset();
+  const onClick = (dir: Direction) => {
+    setDirection({ direction: dir });
     setDone(false);
-    method === 'bubble'
-    ? bubbleSort()
-    : selectionSort();
   };
 
   function* bubbleSort() {
     const { length } = array;
     let arr = array.slice();
-    console.log(arr);
     for (let i = 0; i < length - 1; i++) {
       for (let k = 0; k < length - i - 1; k++) {
         if (
-          (direction === "ascending" && arr[k] > arr[k + 1]) ||
-          (direction === "descending" && arr[k] < arr[k + 1])
+          (direction.direction === Direction.Ascending &&
+            arr[k] > arr[k + 1]) ||
+          (direction.direction === Direction.Descending && arr[k] < arr[k + 1])
         ) {
           swap(arr, k, k + 1);
-          console.log(i, arr, k);
         }
         yield { arr, i, k };
       }
@@ -72,24 +71,59 @@ export const SortingPage: React.FC = () => {
     setDone(true);
     setSorted(true);
   }
-  const gen = bubbleSort();
-  async function doStep() {
-    const action = await gen.next();
+
+  function doStep() {
+    const action = gen.next();
     if (action.done) {
       setDone(true);
-      console.log(3);
     } else {
+      console.log(action.value);
       setArray(action.value.arr);
       setI(action.value.i);
       setK(action.value.k);
-      console.log(action.value);
     }
   }
+  function* selectionSort() {
+    const { length } = array;
+    let arr = array.slice();
+    let i, k: number;
+    for (i = 0; i < length; i++) {
+      let min: number = i;
+      let max: number = i;
+      for (k = i + 1; k < length; k++) {
+        yield { arr, i, k };
+        if (direction.direction === Direction.Ascending && arr[k] < arr[min]) {
+          min = k;
+        } else if (
+          direction.direction === Direction.Descending &&
+          arr[k] > arr[max]
+        ) {
+          max = k;
+        }
+      }
+      if (direction.direction === Direction.Ascending) {
+        swap(arr, i, min);
+        yield { arr, i, k, min };
+      }
+      if (direction.direction === Direction.Descending) {
+        swap(arr, i, k);
+        yield { arr, i, k, max };
+      }
+      // ...
+    }
+    setDone(true);
+    setSorted(true);
+  }
+
   const getState = (index: number) => {
     if (sorted) return ElementStates.Modified;
-    if (index === k || index === k + 1) {
+    if (method === "bubble" && (index === k || index === k + 1)) {
       return ElementStates.Changing;
-    } else if (index >= array.length - i) {
+    } else if (method === "bubble" && index >= array.length - i) {
+      return ElementStates.Modified;
+    } else if (method === "selection" && (index === i || index === k)) {
+      return ElementStates.Changing;
+    } else if (method === "selection" && index < i) {
       return ElementStates.Modified;
     }
     return ElementStates.Default;
@@ -119,20 +153,13 @@ export const SortingPage: React.FC = () => {
             type="button"
             text="По возрастанию"
             sorting={Direction.Ascending}
-            onClick={() => {
-              setDirection(Direction.Ascending);
-              onClick();
-            }}
+            onClick={() => onClick(Direction.Ascending)}
           />
           <Button
             type="button"
             text="По убыванию"
             sorting={Direction.Descending}
-            onClick={() => {
-              setDirection(Direction.Descending);
-
-              onClick();
-            }}
+            onClick={() => onClick(Direction.Descending)}
           />
         </section>
         <Button
