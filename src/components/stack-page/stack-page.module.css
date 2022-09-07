@@ -13,6 +13,7 @@
     margin-left: 68px;
 }
 .output{
+    margin-top: 30px;
     display: flex;
     gap: 10px;
     justify-content: center;
