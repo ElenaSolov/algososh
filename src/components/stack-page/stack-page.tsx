@@ -35,6 +35,7 @@ export const StackPage: React.FC = () => {
   };
   const reset = () => {
     setArray([]);
+    setHead(-1);
     setInputValue("");
   };
 
@@ -47,6 +48,7 @@ export const StackPage: React.FC = () => {
       clearTimeout(timer);
     };
   }, [state]);
+
   return (
     <SolutionLayout title="Стек">
       <form
@@ -54,18 +56,30 @@ export const StackPage: React.FC = () => {
         className={stackStyles.container}
       >
         <Input
+          autoFocus
           value={inputValue}
           type="number"
           onChange={onInputChange}
           maxLength={4}
         />
-        <Button type="button" text="Добавить" onClick={addValue} />
-        <Button type="button" text="Удалить" onClick={deleteValue} />
+        <Button
+          type="button"
+          text="Добавить"
+          disabled={inputValue === ""}
+          onClick={addValue}
+        />
+        <Button
+          type="button"
+          text="Удалить"
+          onClick={deleteValue}
+          disabled={head === -1}
+        />
         <Button
           type="button"
           text="Очистить"
           extraClass={stackStyles.resetBtn}
           onClick={reset}
+          disabled={head === -1}
         />
         <p className={stackStyles.text}>Максимум — 4 символа</p>
       </form>
