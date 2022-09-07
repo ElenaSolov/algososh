@@ -40,7 +40,7 @@ export const SortingPage: React.FC = () => {
     if (!done) {
       setTimer = window.setInterval(() => {
         doStep();
-      }, 1000);
+      }, 500);
     }
     if (done) {
       window.clearInterval(setTimer);
@@ -106,7 +106,7 @@ export const SortingPage: React.FC = () => {
         yield { arr, i, k, min };
       }
       if (direction.direction === Direction.Descending) {
-        swap(arr, i, k);
+        swap(arr, i, max);
         yield { arr, i, k, max };
       }
       // ...
