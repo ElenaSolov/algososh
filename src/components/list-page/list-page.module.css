@@ -21,6 +21,7 @@
     grid-column-end: -1;
 }
 .output{
+    list-style-type: none;
     margin-top: 30px;
     display: flex;
     gap: 10px;
@@ -29,6 +30,13 @@
 }
 .circle{
     margin-bottom: 10px;
+}
+.item{
+    display: flex;
+    align-items: center;
+}
+.arrow:last-of-type{
+    display: none;
 }
 @media screen and (max-width: 1024px) {
     .container{
