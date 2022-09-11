@@ -19,14 +19,12 @@ export const ListPage: React.FC = () => {
   const minArrLength = 3;
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
-  const [addIndex, setAddIndex] = useState(false);
+  const [addIndex, setAddIndex] = useState(-1);
+  const [deleteIndex, setDeleteIndex] = useState(-1);
   const [head, setHead] = useState<IListNode | null>(null);
-  const [addHead, setAddHead] = useState(false);
   const [tail, setTail] = useState<IListNode | null>(null);
-  const [addTail, setAddTail] = useState(false);
   const [array, setArray] = useState<IListNode[]>([]);
   const [update, setUpdate] = useState(false);
-  const [del, setDel] = useState(false);
   const [mark, setMark] = useState<IListNode | null>(null);
   const [i, setI] = useState(-1);
 
@@ -57,38 +55,25 @@ export const ListPage: React.FC = () => {
     setMark(null);
   };
 
-  const insert = async (val: string, type: string) => {
+  const insert = async (val: string, index: number) => {
     const newNode = createListNode(val, null);
-    if (isEmpty()) {
-      setTail(newNode);
-      setHead((prev) => newNode);
-    } else if (type === "head") {
-      setAddHead(true);
-      setMark(newNode);
-      await wait(500);
-      insertStart(newNode);
-    } else if (type === "tail") {
-      setAddTail(true);
-      setMark(newNode);
-      await wait(500);
-      insertEnd(newNode);
-    } else if (type === "index") {
-      setAddIndex(true);
-      await showPlace(+indexValue);
-      setMark(newNode);
-      await wait(500);
-      insertBetween(newNode);
-      resetState();
-      console.log("done");
+    setAddIndex(index);
+    if (index < array.length) {
+      await showPlace(index);
     }
-    setAddIndex(false);
+    setMark(newNode);
+    await wait(500);
+    insertValue(newNode, index);
 
+    // resetState();
+    console.log("done");
+    setAddIndex(-1);
+    setI(-1);
+    resetState();
     updateArray();
     setUpdate(true);
     setNumValue("");
     setIndexValue("");
-    setAddHead(false);
-    setAddTail(false);
   };
 
   const resetState = () => {
@@ -96,23 +81,29 @@ export const ListPage: React.FC = () => {
       array[i].state = ElementStates.Default;
     }
   };
-  const insertStart = (newNode: IListNode) => {
-    newNode.next = head;
-    setHead(newNode);
-  };
-  const insertBetween = async (newNode: IListNode) => {
-    const prevNode = array[+indexValue - 1];
-    newNode.next = prevNode.next;
-    prevNode.next = newNode;
+  const insertValue = async (newNode: IListNode, index: number) => {
+    if (index === 0) {
+      newNode.next = head;
+      setHead(newNode);
+    } else if (index === array.length) {
+      if (tail !== null) tail.next = newNode;
+      setTail(newNode);
+    } else {
+      const prevNode = array[+indexValue - 1];
+      newNode.next = prevNode.next;
+      prevNode.next = newNode;
+    }
   };
 
-  const insertEnd = (newNode: IListNode) => {
-    if (tail !== null) tail.next = newNode;
-    setTail((prev) => newNode);
+  const deleteItem = (type: string) => {
+    if (type === "head") {
+      // if (head !== null) setHead(head.next);
+    }
+    updateArray();
   };
 
   const showPlace = async (index: number) => {
-    for (let i = 0; i <= index; i++) {
+    for (let i = 0; i < index; i++) {
       array[i].state = ElementStates.Changing;
       setI(i);
       updateArray();
@@ -121,7 +112,7 @@ export const ListPage: React.FC = () => {
   };
 
   const getHead = (node: IListNode) => {
-    if (addIndex && array[i] === node) {
+    if (addIndex > -1 && array[i] === node) {
       return (
         <Circle
           letter={numValue}
@@ -131,7 +122,7 @@ export const ListPage: React.FC = () => {
       );
     }
     if (node === head) {
-      return addHead ? (
+      return addIndex === 0 ? (
         <Circle
           letter={numValue}
           state={ElementStates.Changing}
@@ -141,7 +132,7 @@ export const ListPage: React.FC = () => {
         "head"
       );
     } else if (node === tail) {
-      return addTail ? (
+      return addIndex === array.length ? (
         <Circle
           letter={numValue}
           state={ElementStates.Changing}
@@ -150,6 +141,19 @@ export const ListPage: React.FC = () => {
       ) : null;
     }
     return null;
+  };
+
+  const getTail = (node: IListNode) => {
+    if (deleteIndex > -1) {
+      return node === head ? (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      ) : null;
+    }
+    return node === tail ? "tail" : null;
   };
   const updateArray = () => {
     if (head !== null) {
@@ -160,6 +164,7 @@ export const ListPage: React.FC = () => {
         start = start.next;
       }
       setArray(arr);
+      console.log(arr);
     }
     setUpdate(false);
   };
@@ -168,8 +173,7 @@ export const ListPage: React.FC = () => {
     const initialArr: IListNode[] = [];
     for (let i = minArrLength; i >= 0; i--) {
       const value = getRandomInt(0, 100);
-      const node = createListNode(value.toString(), null);
-      initialArr[i] = node;
+      initialArr[i] = createListNode(value.toString(), null);
       if (initialArr[i + 1]) {
         initialArr[i].next = initialArr[i + 1];
       }
@@ -206,18 +210,18 @@ export const ListPage: React.FC = () => {
           type="button"
           text="Добавить в head"
           disabled={numValue === ""}
-          onClick={() => insert(numValue, "head")}
+          onClick={() => insert(numValue, 0)}
         />
         <Button
           type="button"
           text="Добавить в tail"
-          onClick={() => insert(numValue, "tail")}
+          onClick={() => insert(numValue, array.length)}
           disabled={numValue === ""}
         />
         <Button
           type="button"
           text="Удалить из head"
-          // onClick={reset}
+          onClick={() => deleteItem("head")}
           // disabled={tail === -1}
         />
         <Button
@@ -240,7 +244,7 @@ export const ListPage: React.FC = () => {
           text="Добавить по индексу"
           extraClass={listStyles.addBtn}
           disabled={numValue === "" || indexValue === ""}
-          onClick={() => insert(numValue, "index")}
+          onClick={() => insert(numValue, +indexValue)}
         />
         <Button
           type="button"
@@ -255,7 +259,7 @@ export const ListPage: React.FC = () => {
             <li className={listStyles.item} key={index}>
               <Circle
                 head={getHead(node)}
-                tail={node === tail ? "tail" : null}
+                tail={getTail(node)}
                 state={node.state}
                 index={index}
                 letter={node.value}
