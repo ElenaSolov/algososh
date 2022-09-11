@@ -22,7 +22,7 @@
 }
 .output{
     list-style-type: none;
-    margin-top: 95px;
+    margin-top: 65px;
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -34,6 +34,7 @@
 .item{
     display: flex;
     align-items: center;
+    margin-top: 25px;
 }
 .arrow:last-of-type{
     display: none;
