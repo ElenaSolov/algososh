@@ -4,14 +4,15 @@ import listStyles from "./list-page.module.css";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { ElementStates } from "../../types/element-states";
+import { getRandomInt, wait } from "../../utils/utils";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { Circle } from "../ui/circle/circle";
-import { getRandomArr, getRandomInt } from "../../utils/utils";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
 
 interface IListNode {
   value: string;
   next: IListNode | null;
+  state: ElementStates;
 }
 
 export const ListPage: React.FC = () => {
@@ -19,11 +20,13 @@ export const ListPage: React.FC = () => {
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
   const [head, setHead] = useState<IListNode | null>(null);
+  const [addHead, setAddHead] = useState(false);
   const [tail, setTail] = useState<IListNode | null>(null);
+  const [addTail, setAddTail] = useState(false);
   const [array, setArray] = useState<IListNode[]>([]);
   const [update, setUpdate] = useState(false);
-  const [state, setState] = useState(ElementStates.Default);
   const [del, setDel] = useState(false);
+  const [mark, setMark] = useState<IListNode | null>(null);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const limit = 4;
@@ -32,35 +35,47 @@ export const ListPage: React.FC = () => {
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
   const createListNode = (value: string, next: IListNode | null): IListNode => {
-    return { value, next };
+    return { value, next, state: ElementStates.Default };
   };
   const isEmpty = () => {
     return head == null;
   };
 
-  const insert = (val: string, place: string) => {
+  const toMark = async () => {
+    if (mark !== null) {
+      mark.state = ElementStates.Modified;
+      await wait(500);
+      mark.state = ElementStates.Default;
+    }
+    setMark(null);
+  };
+
+  const insert = async (val: string, place: string) => {
     const newNode = createListNode(val, null);
-    console.log(newNode);
     if (isEmpty()) {
-      console.log(head, tail);
       setTail(newNode);
       setHead((prev) => newNode);
     } else if (place === "head") {
-      console.log("head");
+      setAddHead(true);
+      setMark(newNode);
+      await wait(500);
       insertStart(newNode);
     } else if (place === "tail") {
-      console.log("tail");
+      setAddTail(true);
+      setMark(newNode);
+      await wait(500);
       insertEnd(newNode);
     }
     updateArray();
     setUpdate(true);
     setNumValue("");
+
+    setAddHead(false);
+    setAddTail(false);
   };
-  const insertStart = (newNode: IListNode) => {
+  const insertStart = async (newNode: IListNode) => {
     newNode.next = head;
     setHead(newNode);
-    console.log(22);
-    console.log(newNode);
   };
   const insertBetween = (prevNode: IListNode, val: string) => {
     const newNode: IListNode = createListNode(val, null);
@@ -69,20 +84,39 @@ export const ListPage: React.FC = () => {
   };
 
   const insertEnd = (newNode: IListNode) => {
-    console.log("tail", tail);
     if (tail !== null) tail.next = newNode;
     setTail((prev) => newNode);
   };
 
+  const getHead = (node: IListNode) => {
+    if (node === head) {
+      return addHead ? (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      ) : (
+        "head"
+      );
+    } else if (node === tail) {
+      return addTail ? (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      ) : null;
+    }
+    return null;
+  };
   const updateArray = () => {
     if (head !== null) {
       const arr: Array<IListNode> = [];
       let start: IListNode | null = head;
       while (start !== null) {
-        console.log("start", start);
         arr.push(start);
         start = start.next;
-        console.log(arr, start);
       }
       setArray(arr);
     }
@@ -107,9 +141,11 @@ export const ListPage: React.FC = () => {
   useEffect(() => {
     if (update) {
       updateArray();
+      toMark();
       setUpdate(false);
     }
   }, [update]);
+
   return (
     <SolutionLayout title="Связный список">
       <form
@@ -174,8 +210,9 @@ export const ListPage: React.FC = () => {
           {array.map((node, index) => (
             <li className={listStyles.item} key={index}>
               <Circle
-                head={node === head ? "head" : null}
+                head={getHead(node)}
                 tail={node === tail ? "tail" : null}
+                state={node.state}
                 index={index}
                 letter={node.value}
                 // extraClass={listStyles.circle}
