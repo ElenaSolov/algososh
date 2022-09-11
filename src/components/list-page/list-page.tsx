@@ -19,6 +19,7 @@ export const ListPage: React.FC = () => {
   const minArrLength = 3;
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
+  const [addIndex, setAddIndex] = useState(false);
   const [head, setHead] = useState<IListNode | null>(null);
   const [addHead, setAddHead] = useState(false);
   const [tail, setTail] = useState<IListNode | null>(null);
@@ -27,10 +28,15 @@ export const ListPage: React.FC = () => {
   const [update, setUpdate] = useState(false);
   const [del, setDel] = useState(false);
   const [mark, setMark] = useState<IListNode | null>(null);
+  const [i, setI] = useState(-1);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const limit = 4;
     setNumValue(e.target.value.slice(0, limit));
+  };
+  const onIndexInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const limit = 4;
+    setIndexValue(e.target.value.slice(0, limit));
   };
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
@@ -42,6 +48,7 @@ export const ListPage: React.FC = () => {
   };
 
   const toMark = async () => {
+    console.log(mark);
     if (mark !== null) {
       mark.state = ElementStates.Modified;
       await wait(500);
@@ -50,37 +57,53 @@ export const ListPage: React.FC = () => {
     setMark(null);
   };
 
-  const insert = async (val: string, place: string) => {
+  const insert = async (val: string, type: string) => {
     const newNode = createListNode(val, null);
     if (isEmpty()) {
       setTail(newNode);
       setHead((prev) => newNode);
-    } else if (place === "head") {
+    } else if (type === "head") {
       setAddHead(true);
       setMark(newNode);
       await wait(500);
       insertStart(newNode);
-    } else if (place === "tail") {
+    } else if (type === "tail") {
       setAddTail(true);
       setMark(newNode);
       await wait(500);
       insertEnd(newNode);
+    } else if (type === "index") {
+      setAddIndex(true);
+      await showPlace(+indexValue);
+      setMark(newNode);
+      await wait(500);
+      insertBetween(newNode);
+      resetState();
+      console.log("done");
     }
+    setAddIndex(false);
+
     updateArray();
     setUpdate(true);
     setNumValue("");
-
+    setIndexValue("");
     setAddHead(false);
     setAddTail(false);
   };
-  const insertStart = async (newNode: IListNode) => {
+
+  const resetState = () => {
+    for (let i = 0; i < array.length; i++) {
+      array[i].state = ElementStates.Default;
+    }
+  };
+  const insertStart = (newNode: IListNode) => {
     newNode.next = head;
     setHead(newNode);
   };
-  const insertBetween = (prevNode: IListNode, val: string) => {
-    const newNode: IListNode = createListNode(val, null);
-    prevNode.next = newNode;
+  const insertBetween = async (newNode: IListNode) => {
+    const prevNode = array[+indexValue - 1];
     newNode.next = prevNode.next;
+    prevNode.next = newNode;
   };
 
   const insertEnd = (newNode: IListNode) => {
@@ -88,7 +111,25 @@ export const ListPage: React.FC = () => {
     setTail((prev) => newNode);
   };
 
+  const showPlace = async (index: number) => {
+    for (let i = 0; i <= index; i++) {
+      array[i].state = ElementStates.Changing;
+      setI(i);
+      updateArray();
+      await wait(500);
+    }
+  };
+
   const getHead = (node: IListNode) => {
+    if (addIndex && array[i] === node) {
+      return (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      );
+    }
     if (node === head) {
       return addHead ? (
         <Circle
@@ -190,7 +231,7 @@ export const ListPage: React.FC = () => {
           placeholder="Введите индекс"
           value={indexValue}
           type="number"
-          onChange={onInputChange}
+          onChange={onIndexInputChange}
           maxLength={4}
           min={1}
         />
@@ -198,11 +239,14 @@ export const ListPage: React.FC = () => {
           type="button"
           text="Добавить по индексу"
           extraClass={listStyles.addBtn}
+          disabled={numValue === "" || indexValue === ""}
+          onClick={() => insert(numValue, "index")}
         />
         <Button
           type="button"
           text="Удалить по индексу"
           extraClass={listStyles.deleteBtn}
+          disabled={numValue === "" || indexValue === ""}
         />
       </form>
       {!isEmpty() && (
