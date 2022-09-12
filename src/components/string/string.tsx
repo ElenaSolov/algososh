@@ -99,10 +99,9 @@ export const StringComponent: React.FC = () => {
       {stringArray.length > 0 && (
         <ul className={stringStyles.output}>
           {stringArray.map((letter, index) => (
-            <li className={stringStyles.listItem}>
+            <li key={index} className={stringStyles.listItem}>
               <Circle
                 state={getState(index)}
-                key={index}
                 letter={letter.toUpperCase()}
                 extraClass={stringStyles.circle}
                 isSmall={isNotDesktop}

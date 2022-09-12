@@ -58,6 +58,7 @@ export const QueuePage: React.FC = () => {
     setHead((prev) => (prev < maxArrayLength - 1 ? prev + 1 : prev));
     setDone(true);
   };
+
   const reset = () => {
     setArray([...Array(maxArrayLength)]);
     setHead(-1);
@@ -116,16 +117,17 @@ export const QueuePage: React.FC = () => {
 
       <ul className={stackStyles.output}>
         {array.map((num, index) => (
-          <Circle
-            head={index === head ? "head" : null}
-            tail={index === tail ? "tail" : null}
-            key={index}
-            index={index}
-            letter={num}
-            extraClass={stackStyles.circle}
-            isSmall={isNotDesktop}
-            state={getState(index)}
-          />
+          <li key={index}>
+            <Circle
+              head={index === head ? "head" : null}
+              tail={index === tail ? "tail" : null}
+              index={index}
+              letter={num}
+              extraClass={stackStyles.circle}
+              isSmall={isNotDesktop}
+              state={getState(index)}
+            />
+          </li>
         ))}
       </ul>
     </SolutionLayout>

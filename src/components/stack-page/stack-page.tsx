@@ -98,19 +98,22 @@ export const StackPage: React.FC = () => {
       </form>
 
       {array.length > 0 && (
-        <section className={stackStyles.output}>
+        <ul className={stackStyles.output}>
           {array.map((num, index) => (
-            <Circle
-              head={index === head ? "top" : null}
-              key={index}
-              index={index}
-              letter={num}
-              extraClass={stackStyles.circle}
-              isSmall={isNotDesktop}
-              state={index === array.length - 1 ? state : ElementStates.Default}
-            />
+            <li key={index}>
+              <Circle
+                head={index === head ? "top" : null}
+                index={index}
+                letter={num}
+                extraClass={stackStyles.circle}
+                isSmall={isNotDesktop}
+                state={
+                  index === array.length - 1 ? state : ElementStates.Default
+                }
+              />
+            </li>
           ))}
-        </section>
+        </ul>
       )}
     </SolutionLayout>
   );

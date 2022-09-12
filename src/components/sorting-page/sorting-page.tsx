@@ -21,10 +21,6 @@ export const SortingPage: React.FC = () => {
   const [sorted, setSorted] = useState(false);
   let gen = method === BUBBLE ? bubbleSort() : selectionSort();
 
-  useEffect(() => {
-    setArray(getRandomArr());
-  }, []);
-
   const onValueChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setMethod(evt.target.value);
   };
@@ -34,6 +30,10 @@ export const SortingPage: React.FC = () => {
     setK(-2);
     setSorted(false);
   };
+
+  useEffect(() => {
+    setArray(getRandomArr());
+  }, []);
 
   useEffect(() => {
     reset();
@@ -103,7 +103,6 @@ export const SortingPage: React.FC = () => {
         swap(arr, i, max);
         yield { arr, i, k, max };
       }
-      // ...
     }
     setDone(true);
     setSorted(true);

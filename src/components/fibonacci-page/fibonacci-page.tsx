@@ -80,9 +80,8 @@ export const FibonacciPage: React.FC = () => {
           {array.map((value, index) => {
             if (index + 1 > step) return;
             return (
-              <li className={fibStyles.listItem}>
+              <li className={fibStyles.listItem} key={index}>
                 <Circle
-                  key={index}
                   index={index}
                   letter={value.toString()}
                   isSmall={isNotDesktop}
