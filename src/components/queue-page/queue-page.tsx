@@ -7,6 +7,7 @@ import stackStyles from "../stack-page/stack-page.module.css";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const QueuePage: React.FC = () => {
   const maxArrayLength = 7;
@@ -38,18 +39,19 @@ export const QueuePage: React.FC = () => {
     setDel(false);
     setState(ElementStates.Changing);
     setTail((prev) => prev + 1);
-    await wait(500);
+    await wait(SHORT_DELAY_IN_MS);
     const temp = [...array];
     temp[tail + 1] = inputValue;
     setArray(temp);
     setInputValue("");
     setDone(true);
   };
+
   const dequeue = async () => {
     setDone(false);
     setDel(true);
     setState(ElementStates.Changing);
-    await wait(500);
+    await wait(SHORT_DELAY_IN_MS);
     const temp = [...array];
     temp[head] = "";
     setArray(temp);
@@ -66,7 +68,7 @@ export const QueuePage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setState(ElementStates.Default);
-    }, 500);
+    }, SHORT_DELAY_IN_MS);
     if (done) clearTimeout(timer);
 
     return () => {
@@ -112,7 +114,7 @@ export const QueuePage: React.FC = () => {
         <p className={stackStyles.text}>Максимум — 4 символа</p>
       </form>
 
-      <section className={stackStyles.output}>
+      <ul className={stackStyles.output}>
         {array.map((num, index) => (
           <Circle
             head={index === head ? "head" : null}
@@ -125,7 +127,7 @@ export const QueuePage: React.FC = () => {
             state={getState(index)}
           />
         ))}
-      </section>
+      </ul>
     </SolutionLayout>
   );
 };

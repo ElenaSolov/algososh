@@ -13,11 +13,13 @@
 }
 .output{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
+    list-style-type: none;
 }
-.circle{
+.listItem{
     margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 @media screen and (max-width: 681px) {

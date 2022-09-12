@@ -8,6 +8,7 @@ import { getRandomInt, wait } from "../../utils/utils";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 interface IListNode {
   value: string;
@@ -20,7 +21,7 @@ export const ListPage: React.FC = () => {
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
   const [addIndex, setAddIndex] = useState(-1);
-  const [deleteIndex, setDeleteIndex] = useState(-1);
+  const [deleteIndex, setDeleteIndex] = useState(-2);
   const [head, setHead] = useState<IListNode | null>(null);
   const [tail, setTail] = useState<IListNode | null>(null);
   const [array, setArray] = useState<IListNode[]>([]);
@@ -33,7 +34,7 @@ export const ListPage: React.FC = () => {
     setNumValue(e.target.value.slice(0, limit));
   };
   const onIndexInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const limit = 4;
+    const limit = 2;
     setIndexValue(e.target.value.slice(0, limit));
   };
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
@@ -48,7 +49,7 @@ export const ListPage: React.FC = () => {
   const toMark = async () => {
     if (mark !== null) {
       mark.state = ElementStates.Modified;
-      await wait(500);
+      await wait(SHORT_DELAY_IN_MS);
       mark.state = ElementStates.Default;
     }
     setMark(null);
@@ -65,7 +66,7 @@ export const ListPage: React.FC = () => {
       await showPlace(index);
     }
     setMark(newNode);
-    await wait(500);
+    await wait(SHORT_DELAY_IN_MS);
     insertItem(newNode, index);
     setAddIndex(-1);
     resetState();
@@ -81,6 +82,7 @@ export const ListPage: React.FC = () => {
       array[i].state = ElementStates.Default;
     }
   };
+
   const insertItem = (newNode: IListNode, index: number) => {
     if (index === 0) {
       newNode.next = head;
@@ -102,7 +104,7 @@ export const ListPage: React.FC = () => {
     setDeleteIndex(index);
     const deleteItem = array[index];
     setMark(deleteItem);
-    await wait(500);
+    await wait(SHORT_DELAY_IN_MS);
     if (head === tail) {
       setHead(null);
       setArray([]);
@@ -118,10 +120,9 @@ export const ListPage: React.FC = () => {
         prev.next = deleteItem.next;
       }
     }
-    // setDeleteValue("");
     updateArray();
     setUpdate(true);
-    setDeleteIndex(-1);
+    setDeleteIndex(-2);
     setIndexValue("");
     resetState();
     setI(-1);
@@ -132,7 +133,7 @@ export const ListPage: React.FC = () => {
       array[i].state = ElementStates.Changing;
       setI(i);
       updateArray();
-      await wait(500);
+      await wait(SHORT_DELAY_IN_MS);
     }
   };
 
@@ -281,7 +282,12 @@ export const ListPage: React.FC = () => {
           type="button"
           text="Добавить по индексу"
           extraClass={listStyles.addBtn}
-          disabled={numValue === "" || indexValue === ""}
+          disabled={
+            numValue === "" ||
+            indexValue === "" ||
+            +indexValue < 0 ||
+            +indexValue > array.length - 2
+          }
           onClick={() => insert(numValue, +indexValue)}
           isLoader={addIndex > 0 && addIndex < array.length - 1}
         />

@@ -29,6 +29,7 @@ export const StackPage: React.FC = () => {
     setState(ElementStates.Changing);
     setDone(true);
   };
+
   const deleteValue = async () => {
     setDone(false);
     setState(ElementStates.Changing);
@@ -39,6 +40,7 @@ export const StackPage: React.FC = () => {
     setHead((prev) => prev - 1);
     setDone(true);
   };
+
   const reset = () => {
     setArray([]);
     setHead(-1);
@@ -99,7 +101,6 @@ export const StackPage: React.FC = () => {
         <section className={stackStyles.output}>
           {array.map((num, index) => (
             <Circle
-              // state={getState(index)}
               head={index === head ? "top" : null}
               key={index}
               index={index}

@@ -7,6 +7,7 @@ import { RadioInput } from "../ui/radio-input/radio-input";
 import { Column } from "../ui/column/column";
 import { getRandomArr, swap } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
+import { BUBBLE, SELECTION } from "../../constants/element-captions";
 
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<number[]>([]);
@@ -18,7 +19,7 @@ export const SortingPage: React.FC = () => {
   const [i, setI] = useState(-2);
   const [k, setK] = useState(-2);
   const [sorted, setSorted] = useState(false);
-  let gen = method === "bubble" ? bubbleSort() : selectionSort();
+  let gen = method === BUBBLE ? bubbleSort() : selectionSort();
 
   useEffect(() => {
     setArray(getRandomArr());
@@ -27,15 +28,18 @@ export const SortingPage: React.FC = () => {
   const onValueChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setMethod(evt.target.value);
   };
+
   const reset = () => {
     setI(-2);
     setK(-2);
     setSorted(false);
   };
+
   useEffect(() => {
     reset();
     gen = method === "bubble" ? bubbleSort() : selectionSort();
   }, [direction, method]);
+
   useEffect(() => {
     let setTimer: number | undefined;
     if (!done) {
@@ -73,17 +77,6 @@ export const SortingPage: React.FC = () => {
     setSorted(true);
   }
 
-  function doStep() {
-    const action = gen.next();
-    if (action.done) {
-      setDone(true);
-    } else {
-      console.log(action.value);
-      setArray(action.value.arr);
-      setI(action.value.i);
-      setK(action.value.k);
-    }
-  }
   function* selectionSort() {
     const { length } = array;
     let arr = array.slice();
@@ -116,15 +109,26 @@ export const SortingPage: React.FC = () => {
     setSorted(true);
   }
 
+  function doStep() {
+    const action = gen.next();
+    if (action.done) {
+      setDone(true);
+    } else {
+      setArray(action.value.arr);
+      setI(action.value.i);
+      setK(action.value.k);
+    }
+  }
+
   const getState = (index: number) => {
     if (sorted) return ElementStates.Modified;
-    if (method === "bubble" && (index === k || index === k + 1)) {
+    if (method === BUBBLE && (index === k || index === k + 1)) {
       return ElementStates.Changing;
-    } else if (method === "bubble" && index >= array.length - i) {
+    } else if (method === BUBBLE && index >= array.length - i) {
       return ElementStates.Modified;
-    } else if (method === "selection" && (index === i || index === k)) {
+    } else if (method === SELECTION && (index === i || index === k)) {
       return ElementStates.Changing;
-    } else if (method === "selection" && index < i) {
+    } else if (method === SELECTION && index < i) {
       return ElementStates.Modified;
     }
     return ElementStates.Default;
@@ -137,15 +141,15 @@ export const SortingPage: React.FC = () => {
           <RadioInput
             name="method"
             label="Выбор"
-            value="selection"
-            checked={method === "selection"}
+            value={SELECTION}
+            checked={method === SELECTION}
             onChange={onValueChange}
           />
           <RadioInput
             name="method"
             label="Пузырёк"
-            value="bubble"
-            checked={method === "bubble"}
+            value={BUBBLE}
+            checked={method === BUBBLE}
             onChange={onValueChange}
           />
         </section>
@@ -176,7 +180,7 @@ export const SortingPage: React.FC = () => {
         />
       </div>
       <ul className={sortingStyles.output}>
-        {array?.map((el, index) => (
+        {array.map((el, index) => (
           <li className={sortingStyles.item} key={index}>
             <Column index={el} state={getState(index)} />
           </li>

@@ -6,6 +6,7 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -15,9 +16,11 @@ export const FibonacciPage: React.FC = () => {
   const [step, setStep] = useState(0);
 
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
   const onSubmit = (e: SyntheticEvent) => {
     setDone(false);
     e.preventDefault();
@@ -27,6 +30,7 @@ export const FibonacciPage: React.FC = () => {
     }
     if (+inputValue > array.length - 1) fib();
   };
+
   function fib() {
     let nextNum: number;
     let temp = [...array];
@@ -36,6 +40,7 @@ export const FibonacciPage: React.FC = () => {
     }
     setArray(temp);
   }
+
   useEffect(() => {
     let setTimer: number | undefined;
     if (!done && step <= +inputValue) {
@@ -45,10 +50,11 @@ export const FibonacciPage: React.FC = () => {
           setDone(true);
           setInputValue("");
         }
-      }, 1000);
+      }, DELAY_IN_MS);
     }
     return () => window.clearInterval(setTimer);
   }, [step, array.length]);
+
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <form onSubmit={onSubmit} className={stringStyles.container}>
@@ -70,20 +76,22 @@ export const FibonacciPage: React.FC = () => {
       </form>
       {error && <p>Введите целое число от 0 до 19</p>}
       {step > 0 && (
-        <section className={fibStyles.output}>
+        <ul className={fibStyles.output}>
           {array.map((value, index) => {
             if (index + 1 > step) return;
             return (
-              <Circle
-                key={index}
-                index={index}
-                letter={value.toString()}
-                isSmall={isNotDesktop}
-                extraClass={fibStyles.circle}
-              />
+              <li className={fibStyles.listItem}>
+                <Circle
+                  key={index}
+                  index={index}
+                  letter={value.toString()}
+                  isSmall={isNotDesktop}
+                  extraClass={fibStyles.circle}
+                />
+              </li>
             );
           })}
-        </section>
+        </ul>
       )}
     </SolutionLayout>
   );

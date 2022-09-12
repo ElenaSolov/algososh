@@ -6,6 +6,7 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { DELAY_IN_MS } from "../../constants/delays";
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
@@ -13,9 +14,11 @@ export const StringComponent: React.FC = () => {
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(true);
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setStringArray(inputValue.split(""));
@@ -23,6 +26,7 @@ export const StringComponent: React.FC = () => {
     setStep(0);
     setDone(false);
   };
+
   const getState = (index: number) => {
     if (
       step >= Math.floor(stringArray.length / 2) ||
@@ -37,6 +41,7 @@ export const StringComponent: React.FC = () => {
     }
     return ElementStates.Default;
   };
+
   function* reverseIterator() {
     let start = 0;
     let end = stringArray.length - 1;
@@ -54,7 +59,9 @@ export const StringComponent: React.FC = () => {
       yield array;
     }
   }
+
   const gen = reverseIterator();
+
   function doStep() {
     const action = gen.next();
     if (action.done) {
@@ -63,17 +70,19 @@ export const StringComponent: React.FC = () => {
       setStringArray(action.value);
     }
   }
+
   useEffect(() => {
     let timer = window.setInterval(() => {
       if (!done) {
         doStep();
       }
-    }, 1500);
+    }, DELAY_IN_MS);
     if (done) {
       clearTimeout(timer);
     }
     return () => window.clearInterval(timer);
   }, [done]);
+
   return (
     <SolutionLayout title="Строка">
       <form onSubmit={onSubmit} className={stringStyles.container}>
@@ -87,18 +96,20 @@ export const StringComponent: React.FC = () => {
         <p className={stringStyles.text}>Максимум — 11 символов</p>
       </form>
 
-      {stringArray.length && (
-        <section className={stringStyles.output}>
+      {stringArray.length > 0 && (
+        <ul className={stringStyles.output}>
           {stringArray.map((letter, index) => (
-            <Circle
-              state={getState(index)}
-              key={index}
-              letter={letter.toUpperCase()}
-              extraClass={stringStyles.circle}
-              isSmall={isNotDesktop}
-            />
+            <li className={stringStyles.listItem}>
+              <Circle
+                state={getState(index)}
+                key={index}
+                letter={letter.toUpperCase()}
+                extraClass={stringStyles.circle}
+                isSmall={isNotDesktop}
+              />
+            </li>
           ))}
-        </section>
+        </ul>
       )}
     </SolutionLayout>
   );

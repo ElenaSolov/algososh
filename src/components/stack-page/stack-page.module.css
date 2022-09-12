@@ -13,14 +13,16 @@
     margin-left: 68px;
 }
 .output{
+    list-style-type: none;
     margin-top: 30px;
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
 }
-.circle{
+.listItem{
     margin-bottom: 10px;
+    margin-right: 20px;
 }
 @media screen and (max-width: 1024px) {
     .container{
