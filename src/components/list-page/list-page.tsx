@@ -46,7 +46,6 @@ export const ListPage: React.FC = () => {
   };
 
   const toMark = async () => {
-    console.log(mark);
     if (mark !== null) {
       mark.state = ElementStates.Modified;
       await wait(500);
@@ -58,18 +57,19 @@ export const ListPage: React.FC = () => {
   const insert = async (val: string, index: number) => {
     const newNode = createListNode(val, null);
     setAddIndex(index);
+    if (isEmpty()) {
+      setHead(newNode);
+      setTail(newNode);
+    }
     if (index < array.length) {
       await showPlace(index);
     }
     setMark(newNode);
     await wait(500);
-    insertValue(newNode, index);
-
-    // resetState();
-    console.log("done");
+    insertItem(newNode, index);
     setAddIndex(-1);
-    setI(-1);
     resetState();
+    setI(-1);
     updateArray();
     setUpdate(true);
     setNumValue("");
@@ -81,7 +81,7 @@ export const ListPage: React.FC = () => {
       array[i].state = ElementStates.Default;
     }
   };
-  const insertValue = async (newNode: IListNode, index: number) => {
+  const insertItem = (newNode: IListNode, index: number) => {
     if (index === 0) {
       newNode.next = head;
       setHead(newNode);
@@ -95,15 +95,40 @@ export const ListPage: React.FC = () => {
     }
   };
 
-  const deleteItem = (type: string) => {
-    if (type === "head") {
-      // if (head !== null) setHead(head.next);
+  const deleteItem = async (index: number) => {
+    if (index > 0 && index < array.length - 1) {
+      await showPlace(index);
     }
+    setDeleteIndex(index);
+    const deleteItem = array[index];
+    setMark(deleteItem);
+    await wait(500);
+    if (head === tail) {
+      setHead(null);
+      setArray([]);
+    } else if (index === 0) {
+      if (head !== null) setHead(head.next);
+    } else {
+      const prev = array[index - 1];
+
+      if (prev.next === tail) {
+        prev.next = null;
+        setTail(prev);
+      } else {
+        prev.next = deleteItem.next;
+      }
+    }
+    // setDeleteValue("");
     updateArray();
+    setUpdate(true);
+    setDeleteIndex(-1);
+    setIndexValue("");
+    resetState();
+    setI(-1);
   };
 
   const showPlace = async (index: number) => {
-    for (let i = 0; i < index; i++) {
+    for (let i = 0; i <= index; i++) {
       array[i].state = ElementStates.Changing;
       setI(i);
       updateArray();
@@ -144,14 +169,14 @@ export const ListPage: React.FC = () => {
   };
 
   const getTail = (node: IListNode) => {
-    if (deleteIndex > -1) {
-      return node === head ? (
+    if (deleteIndex > -1 && node === array[deleteIndex]) {
+      return (
         <Circle
-          letter={numValue}
+          letter={node.value}
           state={ElementStates.Changing}
           isSmall={true}
         />
-      ) : null;
+      );
     }
     return node === tail ? "tail" : null;
   };
@@ -164,13 +189,22 @@ export const ListPage: React.FC = () => {
         start = start.next;
       }
       setArray(arr);
-      console.log(arr);
-    }
+    } else setArray([]);
     setUpdate(false);
   };
 
+  const getDisabledStatus = (btn: string): boolean => {
+    if (indexValue === "") return true;
+    else if (btn === "delete") {
+      if (+indexValue >= array.length - 1 || +indexValue <= 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
-    const initialArr: IListNode[] = [];
+    const initialArr: IListNode[] = Array(4);
     for (let i = minArrLength; i >= 0; i--) {
       const value = getRandomInt(0, 100);
       initialArr[i] = createListNode(value.toString(), null);
@@ -221,14 +255,14 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить из head"
-          onClick={() => deleteItem("head")}
-          // disabled={tail === -1}
+          onClick={() => deleteItem(0)}
+          disabled={isEmpty()}
         />
         <Button
           type="button"
           text="Удалить из tail"
-          // onClick={reset}
-          // disabled={tail === -1}
+          onClick={() => deleteItem(array.length - 1)}
+          disabled={isEmpty()}
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
         <Input
@@ -250,10 +284,11 @@ export const ListPage: React.FC = () => {
           type="button"
           text="Удалить по индексу"
           extraClass={listStyles.deleteBtn}
-          disabled={numValue === "" || indexValue === ""}
+          disabled={indexValue === "" ? true : getDisabledStatus("delete")}
+          onClick={() => deleteItem(+indexValue)}
         />
       </form>
-      {!isEmpty() && (
+      {
         <ul className={listStyles.output}>
           {array.map((node, index) => (
             <li className={listStyles.item} key={index}>
@@ -262,7 +297,7 @@ export const ListPage: React.FC = () => {
                 tail={getTail(node)}
                 state={node.state}
                 index={index}
-                letter={node.value}
+                letter={index === deleteIndex ? "" : node.value}
                 // extraClass={listStyles.circle}
                 isSmall={isNotDesktop}
               />
@@ -274,7 +309,7 @@ export const ListPage: React.FC = () => {
             </li>
           ))}
         </ul>
-      )}
+      }
     </SolutionLayout>
   );
 };
