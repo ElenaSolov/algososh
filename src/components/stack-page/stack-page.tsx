@@ -13,6 +13,8 @@ export const StackPage: React.FC = () => {
   const [array, setArray] = useState<string[]>([]);
   const [head, setHead] = useState(-1);
   const [state, setState] = useState(ElementStates.Default);
+  const [done, setDone] = useState(true);
+
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const limit = 4;
     setInputValue(e.target.value.slice(0, limit));
@@ -20,18 +22,22 @@ export const StackPage: React.FC = () => {
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
   const addValue = () => {
+    setDone(false);
     setArray([...array, inputValue]);
     setInputValue("");
     setHead((prev) => prev + 1);
     setState(ElementStates.Changing);
+    setDone(true);
   };
   const deleteValue = async () => {
+    setDone(false);
     setState(ElementStates.Changing);
     await wait(500);
     const temp = [...array];
     temp.pop();
     setArray(temp);
     setHead((prev) => prev - 1);
+    setDone(true);
   };
   const reset = () => {
     setArray([]);
@@ -43,6 +49,9 @@ export const StackPage: React.FC = () => {
     const timer = setTimeout(() => {
       setState(ElementStates.Default); // set class to none
     }, 500);
+    if (done) {
+      clearTimeout(timer);
+    }
 
     return () => {
       clearTimeout(timer);
@@ -67,12 +76,14 @@ export const StackPage: React.FC = () => {
           text="Добавить"
           disabled={inputValue === ""}
           onClick={addValue}
+          isLoader={!done}
         />
         <Button
           type="button"
           text="Удалить"
           onClick={deleteValue}
           disabled={head === -1}
+          isLoader={!done}
         />
         <Button
           type="button"

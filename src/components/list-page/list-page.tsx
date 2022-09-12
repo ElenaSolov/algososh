@@ -245,24 +245,28 @@ export const ListPage: React.FC = () => {
           text="Добавить в head"
           disabled={numValue === ""}
           onClick={() => insert(numValue, 0)}
+          isLoader={addIndex === 0}
         />
         <Button
           type="button"
           text="Добавить в tail"
           onClick={() => insert(numValue, array.length)}
           disabled={numValue === ""}
+          isLoader={addIndex === array.length}
         />
         <Button
           type="button"
           text="Удалить из head"
           onClick={() => deleteItem(0)}
           disabled={isEmpty()}
+          isLoader={deleteIndex === 0}
         />
         <Button
           type="button"
           text="Удалить из tail"
           onClick={() => deleteItem(array.length - 1)}
           disabled={isEmpty()}
+          isLoader={deleteIndex === array.length - 1}
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
         <Input
@@ -279,8 +283,10 @@ export const ListPage: React.FC = () => {
           extraClass={listStyles.addBtn}
           disabled={numValue === "" || indexValue === ""}
           onClick={() => insert(numValue, +indexValue)}
+          isLoader={addIndex > 0 && addIndex < array.length - 1}
         />
         <Button
+          isLoader={deleteIndex > 0 && deleteIndex < array.length - 1}
           type="button"
           text="Удалить по индексу"
           extraClass={listStyles.deleteBtn}
@@ -298,7 +304,6 @@ export const ListPage: React.FC = () => {
                 state={node.state}
                 index={index}
                 letter={index === deleteIndex ? "" : node.value}
-                // extraClass={listStyles.circle}
                 isSmall={isNotDesktop}
               />
               <span

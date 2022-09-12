@@ -38,7 +38,6 @@ export const StringComponent: React.FC = () => {
     return ElementStates.Default;
   };
   function* reverseIterator() {
-    console.log(3);
     let start = 0;
     let end = stringArray.length - 1;
     let array = [...stringArray];
@@ -65,18 +64,26 @@ export const StringComponent: React.FC = () => {
     }
   }
   useEffect(() => {
-    let setTimer = window.setInterval(() => {
+    let timer = window.setInterval(() => {
       if (!done) {
         doStep();
       }
     }, 1500);
-    return () => window.clearInterval(setTimer);
+    if (done) {
+      clearTimeout(timer);
+    }
+    return () => window.clearInterval(timer);
   }, [done]);
   return (
     <SolutionLayout title="Строка">
       <form onSubmit={onSubmit} className={stringStyles.container}>
         <Input value={inputValue} onChange={onInputChange} maxLength={11} />
-        <Button type="submit" text="Развернуть" />
+        <Button
+          type="submit"
+          text="Развернуть"
+          isLoader={!done}
+          disabled={inputValue === ""}
+        />
         <p className={stringStyles.text}>Максимум — 11 символов</p>
       </form>
 

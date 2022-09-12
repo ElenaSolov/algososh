@@ -19,13 +19,13 @@ export const FibonacciPage: React.FC = () => {
     setInputValue(e.target.value);
   };
   const onSubmit = (e: SyntheticEvent) => {
+    setDone(false);
     e.preventDefault();
     setStep(1);
     if (+inputValue < 1 || +inputValue > 19) {
       setError(true);
     }
     if (+inputValue > array.length - 1) fib();
-    setDone(false);
   };
   function fib() {
     let nextNum: number;
@@ -60,7 +60,12 @@ export const FibonacciPage: React.FC = () => {
           max={19}
           min={1}
         />
-        <Button type="submit" text="Рассчитать" />
+        <Button
+          type="submit"
+          text="Рассчитать"
+          isLoader={!done}
+          disabled={inputValue === ""}
+        />
         <p className={stringStyles.text}>Максимальное число — 19</p>
       </form>
       {error && <p>Введите целое число от 0 до 19</p>}

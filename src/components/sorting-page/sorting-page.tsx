@@ -19,6 +19,7 @@ export const SortingPage: React.FC = () => {
   const [k, setK] = useState(-2);
   const [sorted, setSorted] = useState(false);
   let gen = method === "bubble" ? bubbleSort() : selectionSort();
+
   useEffect(() => {
     setArray(getRandomArr());
   }, []);
@@ -154,12 +155,14 @@ export const SortingPage: React.FC = () => {
             text="По возрастанию"
             sorting={Direction.Ascending}
             onClick={() => onClick(Direction.Ascending)}
+            isLoader={!done}
           />
           <Button
             type="button"
             text="По убыванию"
             sorting={Direction.Descending}
             onClick={() => onClick(Direction.Descending)}
+            isLoader={!done}
           />
         </section>
         <Button
@@ -169,6 +172,7 @@ export const SortingPage: React.FC = () => {
             reset();
             setArray(getRandomArr());
           }}
+          disabled={!done}
         />
       </div>
       <ul className={sortingStyles.output}>

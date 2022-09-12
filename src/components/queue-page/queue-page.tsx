@@ -17,6 +17,7 @@ export const QueuePage: React.FC = () => {
   const [tail, setTail] = useState(-1);
   const [state, setState] = useState(ElementStates.Default);
   const [del, setDel] = useState(false);
+  const [done, setDone] = useState(true);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const limit = 4;
@@ -32,6 +33,7 @@ export const QueuePage: React.FC = () => {
   };
 
   const enqueue = async () => {
+    setDone(false);
     if (head === -1) setHead(0);
     setDel(false);
     setState(ElementStates.Changing);
@@ -41,8 +43,10 @@ export const QueuePage: React.FC = () => {
     temp[tail + 1] = inputValue;
     setArray(temp);
     setInputValue("");
+    setDone(true);
   };
   const dequeue = async () => {
+    setDone(false);
     setDel(true);
     setState(ElementStates.Changing);
     await wait(500);
@@ -50,6 +54,7 @@ export const QueuePage: React.FC = () => {
     temp[head] = "";
     setArray(temp);
     setHead((prev) => (prev < maxArrayLength - 1 ? prev + 1 : prev));
+    setDone(true);
   };
   const reset = () => {
     setArray([...Array(maxArrayLength)]);
@@ -58,11 +63,11 @@ export const QueuePage: React.FC = () => {
     setInputValue("");
   };
 
-  // useEffect(() => {}, [array]);
   useEffect(() => {
     const timer = setTimeout(() => {
-      setState(ElementStates.Default); // set class to none
+      setState(ElementStates.Default);
     }, 500);
+    if (done) clearTimeout(timer);
 
     return () => {
       clearTimeout(timer);
@@ -88,12 +93,14 @@ export const QueuePage: React.FC = () => {
           text="Добавить"
           disabled={tail === maxArrayLength - 1 || inputValue === ""}
           onClick={enqueue}
+          isLoader={!done}
         />
         <Button
           type="button"
           text="Удалить"
           onClick={dequeue}
           disabled={tail === -1 || head >= maxArrayLength || head > tail}
+          isLoader={!done}
         />
         <Button
           type="button"
