@@ -1,7 +1,12 @@
 import { ElementStates } from "../types/element-states";
 
-class LinkedListNode<T> {
-  public value: T;
+export interface ILinkedListNode<T> {
+  value: T;
+  next: LinkedListNode<T> | null;
+  state: ElementStates;
+}
+class LinkedListNode<T> implements ILinkedListNode<T> {
+  public value;
   public next: LinkedListNode<T> | null;
   public state: ElementStates;
 
