@@ -7,11 +7,15 @@ import { Circle } from "../ui/circle/circle";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { ElementStates } from "../../types/element-states";
 import { wait } from "../../utils/utils";
+import Stack, { IStack } from "../../classes/Stack";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { TOP } from "../../constants/element-captions";
 
 export const StackPage: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
+  const [stack] = useState<IStack<string>>(new Stack<string>());
   const [array, setArray] = useState<string[]>([]);
-  const [head, setHead] = useState(-1);
+  const [top, setTop] = useState(-1);
   const [state, setState] = useState(ElementStates.Default);
   const [done, setDone] = useState(true);
 
@@ -21,44 +25,41 @@ export const StackPage: React.FC = () => {
   };
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
-  const addValue = () => {
+  const updateArray = () => {
+    setArray(stack.storage);
+    setTop(stack.size() - 1);
+  };
+
+  const addValue = async () => {
     setDone(false);
-    setArray([...array, inputValue]);
+    stack.push(inputValue);
+    updateArray();
     setInputValue("");
-    setHead((prev) => prev + 1);
     setState(ElementStates.Changing);
+    await wait(SHORT_DELAY_IN_MS);
+    setState(ElementStates.Default);
     setDone(true);
   };
 
   const deleteValue = async () => {
     setDone(false);
     setState(ElementStates.Changing);
-    await wait(500);
-    const temp = [...array];
-    temp.pop();
-    setArray(temp);
-    setHead((prev) => prev - 1);
+    await wait(SHORT_DELAY_IN_MS);
+    stack.pop();
+    updateArray();
+    setState(ElementStates.Default);
     setDone(true);
   };
 
   const reset = () => {
-    setArray([]);
-    setHead(-1);
+    stack.clear();
+    updateArray();
     setInputValue("");
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setState(ElementStates.Default); // set class to none
-    }, 500);
-    if (done) {
-      clearTimeout(timer);
-    }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [state]);
+    setArray(stack.storage);
+  }, []);
 
   return (
     <SolutionLayout title="Стек">
@@ -84,7 +85,7 @@ export const StackPage: React.FC = () => {
           type="button"
           text="Удалить"
           onClick={deleteValue}
-          disabled={head === -1}
+          disabled={array.length <= 0}
           isLoader={!done}
         />
         <Button
@@ -92,7 +93,7 @@ export const StackPage: React.FC = () => {
           text="Очистить"
           extraClass={stackStyles.resetBtn}
           onClick={reset}
-          disabled={head === -1}
+          disabled={array.length <= 0}
         />
         <p className={stackStyles.text}>Максимум — 4 символа</p>
       </form>
@@ -102,7 +103,7 @@ export const StackPage: React.FC = () => {
           {array.map((num, index) => (
             <li key={index}>
               <Circle
-                head={index === head ? "top" : null}
+                head={index === top ? TOP : null}
                 index={index}
                 letter={num}
                 extraClass={stackStyles.circle}
