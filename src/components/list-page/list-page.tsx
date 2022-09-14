@@ -53,7 +53,9 @@ export const ListPage: React.FC = () => {
 
   const showPlace = async (index: number) => {
     for (let i = 0; i <= index; i++) {
-      array[i].state = ElementStates.Changing;
+      if (array[i]) {
+        array[i].state = ElementStates.Changing;
+      }
       setI(i);
       await wait(SHORT_DELAY_IN_MS);
     }
@@ -69,7 +71,7 @@ export const ListPage: React.FC = () => {
         />
       );
     }
-    if (node === list.head) {
+    if (node === list.getHead()) {
       return addIndex === 0 ? (
         <Circle
           letter={numValue}
@@ -79,7 +81,7 @@ export const ListPage: React.FC = () => {
       ) : (
         HEAD
       );
-    } else if (node === list.tail) {
+    } else if (node === list.getTail()) {
       return addIndex === array.length ? (
         <Circle
           letter={numValue}
@@ -101,7 +103,7 @@ export const ListPage: React.FC = () => {
         />
       );
     }
-    return node === list.tail ? TAIL : null;
+    return node === list.getTail() ? TAIL : null;
   };
 
   const getDisabledStatus = (btn: string): boolean => {
@@ -165,7 +167,9 @@ export const ListPage: React.FC = () => {
           text="Добавить в tail"
           onClick={async () => {
             setAddIndex(array.length);
-            list.tail!.state = ElementStates.Changing;
+            if (array.length > 0) {
+              list.getTail()!.state = ElementStates.Changing;
+            }
             await wait(SHORT_DELAY_IN_MS);
             const newNode = list.append(+numValue);
             setMark(newNode);
@@ -185,9 +189,9 @@ export const ListPage: React.FC = () => {
             await wait(SHORT_DELAY_IN_MS);
             list.deleteHead();
             setArray(list.toArray());
-            setDeleteIndex(-1);
+            setDeleteIndex(-2);
           }}
-          disabled={list.head === null}
+          disabled={list.getHead() === null}
           isLoader={deleteIndex === 0}
         />
         <Button
@@ -198,9 +202,9 @@ export const ListPage: React.FC = () => {
             await wait(SHORT_DELAY_IN_MS);
             list.deleteTail();
             setArray(list.toArray());
-            setDeleteIndex(-1);
+            setDeleteIndex(-2);
           }}
-          disabled={list.head === null}
+          disabled={list.getHead() === null}
           isLoader={deleteIndex === array.length - 1}
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
@@ -255,7 +259,7 @@ export const ListPage: React.FC = () => {
             resetState();
             setNumValue("");
             setIndexValue("");
-            setDeleteIndex(-1);
+            setDeleteIndex(-2);
             setI(-1);
           }}
         />

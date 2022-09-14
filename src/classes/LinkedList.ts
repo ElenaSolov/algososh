@@ -10,16 +10,24 @@ export interface ILinkedList<T> {
   deleteTail(): LinkedListNode<T> | null;
   toArray(): LinkedListNode<T>[];
   length(): number;
+  getHead(): LinkedListNode<T> | null;
+  getTail(): LinkedListNode<T> | null;
 }
 
 class LinkedList<T> implements ILinkedList<T> {
-  public head: LinkedListNode<T> | null = null;
-  public tail: LinkedListNode<T> | null = null;
+  private head: LinkedListNode<T> | null = null;
+  private tail: LinkedListNode<T> | null = null;
 
   length(): number {
     return this.toArray().length;
   }
 
+  getHead() {
+    return this.head;
+  }
+  getTail() {
+    return this.tail;
+  }
   findByIndex(index: number): LinkedListNode<T> | null {
     if (!this.head) return null;
     let i = 0;
@@ -34,7 +42,6 @@ class LinkedList<T> implements ILinkedList<T> {
   addByIndex(index: number, data: T): LinkedListNode<T> {
     const node = new LinkedListNode(data);
     const prev = this.findByIndex(index - 1);
-    console.log(prev);
     if (prev) {
       node.next = prev.next;
       prev.next = node;
@@ -45,7 +52,6 @@ class LinkedList<T> implements ILinkedList<T> {
   append(data: T): LinkedListNode<T> {
     const node = new LinkedListNode(data);
     if (!this.tail) {
-      console.log(1);
       this.head = node;
       this.tail = node;
     } else {
@@ -66,7 +72,12 @@ class LinkedList<T> implements ILinkedList<T> {
   deleteHead(): LinkedListNode<T> | null {
     if (!this.head) return null;
     const node = this.head;
-    this.head = this.head.next;
+    if (this.tail === this.head) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+    }
     return node;
   }
 
