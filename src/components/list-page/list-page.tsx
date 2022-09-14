@@ -9,29 +9,22 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
-import LinkedList, { ILinkedList } from "../../classes/LinkedList";
-import LinkedListNode, { ILinkedListNode } from "../../classes/LinkedListNode";
-
-interface IListNode {
-  value: string;
-  next: IListNode | null;
-  state: ElementStates;
-}
+import LinkedList from "../../classes/LinkedList";
+import LinkedListNode from "../../classes/LinkedListNode";
+import { HEAD, TAIL } from "../../constants/element-captions";
 
 export const ListPage: React.FC = () => {
   const minArrLength = 3;
+  const maxArrLength = 11;
+
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
   const [addIndex, setAddIndex] = useState(-1);
   const [deleteIndex, setDeleteIndex] = useState(-2);
-  // const [head, setHead] = useState<IListNode | null>(null);
-  // const [tail, setTail] = useState<IListNode | null>(null);
   const [array, setArray] = useState<LinkedListNode<number>[]>([]);
-  const [update, setUpdate] = useState(false);
-  const [mark, setMark] = useState<IListNode | null>(null);
+  const [mark, setMark] = useState<LinkedListNode<number> | null>(null);
   const [i, setI] = useState(-1);
-
-  const [list, setList] = useState(new LinkedList<number>());
+  const [list] = useState(new LinkedList<number>());
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const limit = 4;
@@ -43,160 +36,73 @@ export const ListPage: React.FC = () => {
   };
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
-  // const createListNode = (value: string, next: IListNode | null): IListNode => {
-  //   return { value, next, state: ElementStates.Default };
-  // };
-  // const isEmpty = () => {
-  //   return head == null;
-  // };
-  //
-  // const toMark = async () => {
-  //   if (mark !== null) {
-  //     mark.state = ElementStates.Modified;
-  //     await wait(SHORT_DELAY_IN_MS);
-  //     mark.state = ElementStates.Default;
-  //   }
-  //   setMark(null);
-  // };
-  //
-  // const insert = async (val: string, index: number) => {
-  //   const newNode = createListNode(val, null);
-  //   setAddIndex(index);
-  //   if (isEmpty()) {
-  //     setHead(newNode);
-  //     setTail(newNode);
-  //   }
-  //   if (index < array.length) {
-  //     await showPlace(index);
-  //   }
-  //   setMark(newNode);
-  //   await wait(SHORT_DELAY_IN_MS);
-  //   insertItem(newNode, index);
-  //   setAddIndex(-1);
-  //   resetState();
-  //   setI(-1);
-  //   updateArray();
-  //   setUpdate(true);
-  //   setNumValue("");
-  //   setIndexValue("");
-  // };
-  //
-  // const resetState = () => {
-  //   for (let i = 0; i < array.length; i++) {
-  //     array[i].state = ElementStates.Default;
-  //   }
-  // };
-  //
-  // const insertItem = (newNode: IListNode, index: number) => {
-  //   if (index === 0) {
-  //     newNode.next = head;
-  //     setHead(newNode);
-  //   } else if (index === array.length) {
-  //     if (tail !== null) tail.next = newNode;
-  //     setTail(newNode);
-  //   } else {
-  //     const prevNode = array[+indexValue - 1];
-  //     newNode.next = prevNode.next;
-  //     prevNode.next = newNode;
-  //   }
-  // };
-  //
-  // const deleteItem = async (index: number) => {
-  //   if (index > 0 && index < array.length - 1) {
-  //     await showPlace(index);
-  //   }
-  //   setDeleteIndex(index);
-  //   const deleteItem = array[index];
-  //   setMark(deleteItem);
-  //   await wait(SHORT_DELAY_IN_MS);
-  //   if (head === tail) {
-  //     setHead(null);
-  //     setArray([]);
-  //   } else if (index === 0) {
-  //     if (head !== null) setHead(head.next);
-  //   } else {
-  //     const prev = array[index - 1];
-  //
-  //     if (prev.next === tail) {
-  //       prev.next = null;
-  //       setTail(prev);
-  //     } else {
-  //       prev.next = deleteItem.next;
-  //     }
-  //   }
-  //   updateArray();
-  //   setUpdate(true);
-  //   setDeleteIndex(-2);
-  //   setIndexValue("");
-  //   resetState();
-  //   setI(-1);
-  // };
-  //
-  // const showPlace = async (index: number) => {
-  //   for (let i = 0; i <= index; i++) {
-  //     array[i].state = ElementStates.Changing;
-  //     setI(i);
-  //     updateArray();
-  //     await wait(SHORT_DELAY_IN_MS);
-  //   }
-  // };
+  const toMark = async () => {
+    if (mark !== null) {
+      mark.state = ElementStates.Modified;
+      await wait(SHORT_DELAY_IN_MS);
+      mark.state = ElementStates.Default;
+    }
+    setMark(null);
+  };
 
-  // const getHead = (node: IListNode) => {
-  //   if (addIndex > -1 && array[i] === node) {
-  //     return (
-  //       <Circle
-  //         letter={numValue}
-  //         state={ElementStates.Changing}
-  //         isSmall={true}
-  //       />
-  //     );
-  //   }
-  //   if (node === head) {
-  //     return addIndex === 0 ? (
-  //       <Circle
-  //         letter={numValue}
-  //         state={ElementStates.Changing}
-  //         isSmall={true}
-  //       />
-  //     ) : (
-  //       "head"
-  //     );
-  //   } else if (node === tail) {
-  //     return addIndex === array.length ? (
-  //       <Circle
-  //         letter={numValue}
-  //         state={ElementStates.Changing}
-  //         isSmall={true}
-  //       />
-  //     ) : null;
-  //   }
-  //   return null;
-  // };
-  //
-  // const getTail = (node: IListNode) => {
-  //   if (deleteIndex > -1 && node === array[deleteIndex]) {
-  //     return (
-  //       <Circle
-  //         letter={node.value}
-  //         state={ElementStates.Changing}
-  //         isSmall={true}
-  //       />
-  //     );
-  //   }
-  //   return node === tail ? "tail" : null;
-  // };
-  // const updateArray = () => {
-  //   if (head !== null) {
-  //     const arr: Array<IListNode> = [];
-  //     let start: IListNode | null = head;
-  //     while (start !== null) {
-  //       arr.push(start);
-  //       start = start.next;
-  //     }
-  //     setArray(arr);
-  //   } else setArray([]);
-  //   setUpdate(false);
-  // };
+  const resetState = () => {
+    for (let i = 0; i < array.length; i++) {
+      array[i].state = ElementStates.Default;
+    }
+  };
+
+  const showPlace = async (index: number) => {
+    for (let i = 0; i <= index; i++) {
+      array[i].state = ElementStates.Changing;
+      setI(i);
+      await wait(SHORT_DELAY_IN_MS);
+    }
+  };
+
+  const getHead = (node: LinkedListNode<number>) => {
+    if (array[i] === node && addIndex >= 0) {
+      return (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      );
+    }
+    if (node === list.head) {
+      return addIndex === 0 ? (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      ) : (
+        HEAD
+      );
+    } else if (node === list.tail) {
+      return addIndex === array.length ? (
+        <Circle
+          letter={numValue}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      ) : null;
+    }
+    return null;
+  };
+
+  const getTail = (node: LinkedListNode<any>) => {
+    if (deleteIndex > -1 && node === array[deleteIndex]) {
+      return (
+        <Circle
+          letter={node.value}
+          state={ElementStates.Changing}
+          isSmall={true}
+        />
+      );
+    }
+    return node === list.tail ? TAIL : null;
+  };
 
   const getDisabledStatus = (btn: string): boolean => {
     if (indexValue === "") return true;
@@ -209,20 +115,17 @@ export const ListPage: React.FC = () => {
   };
 
   useEffect(() => {
-    for (let i = minArrLength; i >= 0; i--) {
-      const value = getRandomInt(0, 100);
-      list.append(value);
-      console.log(list);
+    if (list.length() === 0) {
+      for (let i = minArrLength; i >= 0; i--) {
+        const value = getRandomInt(0, 100);
+        list.append(value);
+      }
+      setArray(list.toArray());
     }
-    setArray(list.toArray());
   }, []);
-  // useEffect(() => {
-  //   if (update) {
-  //     updateArray();
-  //     toMark();
-  //     setUpdate(false);
-  //   }
-  // }, [update]);
+  useEffect(() => {
+    toMark();
+  }, [array.length]);
 
   return (
     <SolutionLayout title="Связный список">
@@ -239,13 +142,20 @@ export const ListPage: React.FC = () => {
           maxLength={4}
           min={1}
         />
+
         <Button
           type="button"
           text="Добавить в head"
-          disabled={numValue === ""}
-          onClick={() => {
-            list.prepend(+numValue);
+          disabled={numValue === "" || array.length >= maxArrLength}
+          onClick={async () => {
+            setAddIndex(0);
+            await showPlace(0);
+            const newNode = list.prepend(+numValue);
+            setMark(newNode);
             setArray(list.toArray());
+            setAddIndex(-1);
+            resetState();
+            setI(-1);
             setNumValue("");
           }}
           isLoader={addIndex === 0}
@@ -253,32 +163,44 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в tail"
-          onClick={() => {
-            list.append(+numValue);
+          onClick={async () => {
+            setAddIndex(array.length);
+            list.tail!.state = ElementStates.Changing;
+            await wait(SHORT_DELAY_IN_MS);
+            const newNode = list.append(+numValue);
+            setMark(newNode);
             setArray(list.toArray());
             setNumValue("");
+            setAddIndex(-1);
+            resetState();
           }}
-          disabled={numValue === ""}
+          disabled={numValue === "" || array.length >= maxArrLength}
           isLoader={addIndex === array.length}
         />
         <Button
           type="button"
           text="Удалить из head"
-          onClick={() => {
+          onClick={async () => {
+            setDeleteIndex(0);
+            await wait(SHORT_DELAY_IN_MS);
             list.deleteHead();
             setArray(list.toArray());
+            setDeleteIndex(-1);
           }}
-          // disabled={isEmpty()}
+          disabled={list.head === null}
           isLoader={deleteIndex === 0}
         />
         <Button
           type="button"
           text="Удалить из tail"
-          onClick={() => {
+          onClick={async () => {
+            setDeleteIndex(array.length - 1);
+            await wait(SHORT_DELAY_IN_MS);
             list.deleteTail();
             setArray(list.toArray());
+            setDeleteIndex(-1);
           }}
-          // disabled={isEmpty()}
+          disabled={list.head === null}
           isLoader={deleteIndex === array.length - 1}
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
@@ -297,14 +219,23 @@ export const ListPage: React.FC = () => {
           disabled={
             numValue === "" ||
             indexValue === "" ||
-            +indexValue < 0 ||
-            +indexValue > array.length - 2
+            +indexValue <= 0 ||
+            +indexValue > array.length - 2 ||
+            array.length >= maxArrLength
           }
-          onClick={() => {
-            list.addByIndex(+numValue, +indexValue);
+          onClick={async () => {
+            const index = +indexValue;
+            setAddIndex(index);
+            setI(0);
+            await showPlace(index);
+            const newNode = list.addByIndex(+numValue, index);
+            setMark(newNode);
             setArray(list.toArray());
             setNumValue("");
             setIndexValue("");
+            setAddIndex(-1);
+            resetState();
+            setI(-1);
           }}
           isLoader={addIndex > 0 && addIndex < array.length - 1}
         />
@@ -314,11 +245,18 @@ export const ListPage: React.FC = () => {
           text="Удалить по индексу"
           extraClass={listStyles.deleteBtn}
           disabled={indexValue === "" ? true : getDisabledStatus("delete")}
-          onClick={() => {
-            list.deleteByIndex(+indexValue);
+          onClick={async () => {
+            const index = +indexValue;
+            await showPlace(index);
+            setDeleteIndex(index);
+            await wait(SHORT_DELAY_IN_MS);
+            list.deleteByIndex(index);
             setArray(list.toArray());
+            resetState();
             setNumValue("");
             setIndexValue("");
+            setDeleteIndex(-1);
+            setI(-1);
           }}
         />
       </form>
@@ -327,11 +265,11 @@ export const ListPage: React.FC = () => {
           {array.map((node, index) => (
             <li className={listStyles.item} key={index}>
               <Circle
-                // head={getHead(node)}
-                // tail={getTail(node)}
+                head={getHead(node)}
+                tail={getTail(node)}
                 state={node.state}
                 index={index}
-                letter={node.value.toString()}
+                letter={index === deleteIndex ? "" : node.value.toString()}
                 isSmall={isNotDesktop}
               />
               <span
