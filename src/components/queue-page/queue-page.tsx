@@ -8,15 +8,16 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import Queue, { IQueue } from "../../classes/Queue";
+import { HEAD, TAIL } from "../../constants/element-captions";
 
 export const QueuePage: React.FC = () => {
   const maxArrayLength = 7;
 
   const [inputValue, setInputValue] = useState("");
-  const [array, setArray] = useState<string[]>([...Array(maxArrayLength)]);
-  const [head, setHead] = useState(-1);
-  const [tail, setTail] = useState(-1);
-  const [state, setState] = useState(ElementStates.Default);
+  const [queue] = useState<IQueue<string>>(new Queue<string>(maxArrayLength));
+  const [array, setArray] = useState<Array<string | undefined>>([]);
+  const [mark, setMark] = useState(-1);
   const [del, setDel] = useState(false);
   const [done, setDone] = useState(true);
 
@@ -24,58 +25,50 @@ export const QueuePage: React.FC = () => {
     const limit = 4;
     setInputValue(e.target.value.slice(0, limit));
   };
+
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
   const getState = (index: number) => {
     if (del) {
-      return index === head ? state : ElementStates.Default;
+      return index === mark ? ElementStates.Changing : ElementStates.Default;
     }
-    return index === tail ? state : ElementStates.Default;
+    return index === mark ? ElementStates.Changing : ElementStates.Default;
   };
 
   const enqueue = async () => {
     setDone(false);
-    if (head === -1) setHead(0);
-    setDel(false);
-    setState(ElementStates.Changing);
-    setTail((prev) => prev + 1);
+    setMark(queue.getTail() + 1);
     await wait(SHORT_DELAY_IN_MS);
-    const temp = [...array];
-    temp[tail + 1] = inputValue;
-    setArray(temp);
+    queue.enqueue(inputValue);
+    setArray(queue.getStorage());
     setInputValue("");
+    await wait(SHORT_DELAY_IN_MS);
+    setMark(-1);
     setDone(true);
   };
 
   const dequeue = async () => {
     setDone(false);
     setDel(true);
-    setState(ElementStates.Changing);
+    setMark(queue.getHead());
     await wait(SHORT_DELAY_IN_MS);
-    const temp = [...array];
-    temp[head] = "";
-    setArray(temp);
-    setHead((prev) => (prev < maxArrayLength - 1 ? prev + 1 : prev));
+    queue.dequeue();
+    setArray(queue.getStorage());
+    await wait(SHORT_DELAY_IN_MS);
+    setMark(-1);
+    setDel(false);
     setDone(true);
   };
 
   const reset = () => {
-    setArray([...Array(maxArrayLength)]);
-    setHead(-1);
-    setTail(-1);
+    queue.clear();
+    setArray(queue.getStorage());
     setInputValue("");
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setState(ElementStates.Default);
-    }, SHORT_DELAY_IN_MS);
-    if (done) clearTimeout(timer);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [state]);
+    setArray(queue.getStorage());
+  }, []);
 
   return (
     <SolutionLayout title="Очередь">
@@ -94,7 +87,7 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
-          disabled={tail === maxArrayLength - 1 || inputValue === ""}
+          disabled={queue.getTail() === maxArrayLength - 1 || inputValue === ""}
           onClick={enqueue}
           isLoader={!done}
         />
@@ -102,7 +95,12 @@ export const QueuePage: React.FC = () => {
           type="button"
           text="Удалить"
           onClick={dequeue}
-          disabled={tail === -1 || head >= maxArrayLength || head > tail}
+          disabled={
+            queue.getTail() === -1 ||
+            queue.getTail() === maxArrayLength - 1 ||
+            queue.getHead() >= maxArrayLength ||
+            queue.getHead() > queue.getTail()
+          }
           isLoader={!done}
         />
         <Button
@@ -110,7 +108,7 @@ export const QueuePage: React.FC = () => {
           text="Очистить"
           extraClass={stackStyles.resetBtn}
           onClick={reset}
-          disabled={tail === -1}
+          disabled={queue.getTail() === -1}
         />
         <p className={stackStyles.text}>Максимум — 4 символа</p>
       </form>
@@ -119,8 +117,8 @@ export const QueuePage: React.FC = () => {
         {array.map((num, index) => (
           <li key={index}>
             <Circle
-              head={index === head ? "head" : null}
-              tail={index === tail ? "tail" : null}
+              head={index === queue.getHead() ? HEAD : null}
+              tail={index === queue.getTail() ? TAIL : null}
               index={index}
               letter={num}
               extraClass={stackStyles.circle}
