@@ -97,7 +97,8 @@ export const QueuePage: React.FC = () => {
           onClick={dequeue}
           disabled={
             queue.getTail() === -1 ||
-            queue.getTail() === maxArrayLength - 1 ||
+            (queue.getTail() === maxArrayLength - 1 &&
+              array[queue.getTail()] === undefined) ||
             queue.getHead() >= maxArrayLength ||
             queue.getHead() > queue.getTail()
           }

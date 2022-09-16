@@ -9,7 +9,7 @@ import useMediaQuery from "../../hooks/useMediaQuery";
 import { DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: React.FC = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<number | string>("");
   const [array, setArray] = useState<number[]>([1, 1]);
   const [error, setError] = useState(false);
   const [done, setDone] = useState(true);
@@ -18,39 +18,45 @@ export const FibonacciPage: React.FC = () => {
   const isNotDesktop = useMediaQuery("(max-width: 1024px)");
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    setInputValue(+e.target.value);
   };
 
   const onSubmit = (e: SyntheticEvent) => {
     setDone(false);
     e.preventDefault();
     setStep(1);
-    if (+inputValue < 1 || +inputValue > 19) {
-      setError(true);
+    if (inputValue) {
+      if (inputValue < 1 || inputValue > 19) {
+        setError(true);
+      }
+      if (inputValue > array.length - 1) fib();
     }
-    if (+inputValue > array.length - 1) fib();
   };
 
-  function fib() {
+  const fib = () => {
     let nextNum: number;
-    let temp = [...array];
-    for (let i = array.length - 1; i < +inputValue; i++) {
-      nextNum = temp[i - 1] + temp[i];
-      temp.push(nextNum);
+    const temp = [...array];
+    if (inputValue) {
+      for (let i = array.length - 1; i < inputValue; i++) {
+        nextNum = temp[i - 1] + temp[i];
+        temp.push(nextNum);
+      }
     }
     setArray(temp);
-  }
+  };
 
   useEffect(() => {
     let setTimer: number | undefined;
-    if (!done && step <= +inputValue) {
-      setTimer = window.setInterval(() => {
-        setStep((prev) => prev + 1);
-        if (step === +inputValue) {
-          setDone(true);
-          setInputValue("");
-        }
-      }, DELAY_IN_MS);
+    if (inputValue) {
+      if (!done && step <= inputValue) {
+        setTimer = window.setInterval(() => {
+          setStep((prev) => prev + 1);
+          if (step === inputValue) {
+            setDone(true);
+            setInputValue("");
+          }
+        }, DELAY_IN_MS);
+      }
     }
     return () => window.clearInterval(setTimer);
   }, [step, array.length]);
@@ -78,8 +84,7 @@ export const FibonacciPage: React.FC = () => {
       {step > 0 && (
         <ul className={fibStyles.output}>
           {array.map((value, index) => {
-            if (index + 1 > step) return;
-            return (
+            return index + 1 <= step ? (
               <li className={fibStyles.listItem} key={index}>
                 <Circle
                   index={index}
@@ -88,7 +93,7 @@ export const FibonacciPage: React.FC = () => {
                   extraClass={fibStyles.circle}
                 />
               </li>
-            );
+            ) : null;
           })}
         </ul>
       )}

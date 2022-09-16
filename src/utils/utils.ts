@@ -1,3 +1,5 @@
+import { Direction } from "../types/direction";
+
 export function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -10,7 +12,6 @@ export const getRandomArr = () => {
   for (let i = 0; i < arrayLength; i++) {
     array.push(getRandomInt(0, 100));
   }
-  console.log(array);
   return array;
 };
 
@@ -24,6 +25,27 @@ export const swap = (
   arr[secondIndex] = temp;
   return arr;
 };
+
+export function* bubbleSort(
+  array: number[],
+  direction: { direction: Direction }
+) {
+  const { length } = array;
+  let arr = array.slice();
+  for (let i = 0; i < length - 1; i++) {
+    for (let k = 0; k < length - i - 1; k++) {
+      if (
+        (direction.direction === Direction.Ascending && arr[k] > arr[k + 1]) ||
+        (direction.direction === Direction.Descending && arr[k] < arr[k + 1])
+      ) {
+        swap(arr, k, k + 1);
+      }
+      yield { arr, i, k };
+    }
+  }
+  // setDone(true);
+  // setSorted(true);
+}
 
 export const wait = (milliseconds: number) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));

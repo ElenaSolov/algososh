@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import sortingStyles from "./sorting-page.module.css";
 import { Direction } from "../../types/direction";
 import { Button } from "../ui/button/button";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Column } from "../ui/column/column";
-import { getRandomArr, swap } from "../../utils/utils";
+import { getRandomArr, swap, bubbleSort } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
 import { BUBBLE, SELECTION } from "../../constants/element-captions";
+import { INITIAL_INDEX } from "../../constants/initialValues";
 
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<number[]>([]);
@@ -16,18 +17,20 @@ export const SortingPage: React.FC = () => {
     direction: Direction.Ascending,
   });
   const [done, setDone] = useState(true);
-  const [i, setI] = useState(-2);
-  const [k, setK] = useState(-2);
+  const [i, setI] = useState(INITIAL_INDEX);
+  const [k, setK] = useState(INITIAL_INDEX);
   const [sorted, setSorted] = useState(false);
-  let gen = method === BUBBLE ? bubbleSort() : selectionSort();
+  let gen = useCallback(() => {
+    return method === BUBBLE ? bubbleSort(array, direction) : selectionSort();
+  }, [method, direction])();
 
   const onValueChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setMethod(evt.target.value);
   };
 
   const reset = () => {
-    setI(-2);
-    setK(-2);
+    setI(INITIAL_INDEX);
+    setK(INITIAL_INDEX);
     setSorted(false);
   };
 
@@ -37,7 +40,7 @@ export const SortingPage: React.FC = () => {
 
   useEffect(() => {
     reset();
-    gen = method === "bubble" ? bubbleSort() : selectionSort();
+    // gen = method === "bubble" ? bubbleSort() : selectionSort();
   }, [direction, method]);
 
   useEffect(() => {
@@ -57,25 +60,6 @@ export const SortingPage: React.FC = () => {
     setDirection({ direction: dir });
     setDone(false);
   };
-
-  function* bubbleSort() {
-    const { length } = array;
-    let arr = array.slice();
-    for (let i = 0; i < length - 1; i++) {
-      for (let k = 0; k < length - i - 1; k++) {
-        if (
-          (direction.direction === Direction.Ascending &&
-            arr[k] > arr[k + 1]) ||
-          (direction.direction === Direction.Descending && arr[k] < arr[k + 1])
-        ) {
-          swap(arr, k, k + 1);
-        }
-        yield { arr, i, k };
-      }
-    }
-    setDone(true);
-    setSorted(true);
-  }
 
   function* selectionSort() {
     const { length } = array;
@@ -112,6 +96,7 @@ export const SortingPage: React.FC = () => {
     const action = gen.next();
     if (action.done) {
       setDone(true);
+      setSorted(true);
     } else {
       setArray(action.value.arr);
       setI(action.value.i);

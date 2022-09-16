@@ -12,6 +12,7 @@ import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import LinkedList from "../../classes/LinkedList";
 import LinkedListNode from "../../classes/LinkedListNode";
 import { HEAD, TAIL } from "../../constants/element-captions";
+import { INITIAL_INDEX } from "../../constants/initialValues";
 
 export const ListPage: React.FC = () => {
   const minArrLength = 3;
@@ -20,7 +21,7 @@ export const ListPage: React.FC = () => {
   const [numValue, setNumValue] = useState("");
   const [indexValue, setIndexValue] = useState("");
   const [addIndex, setAddIndex] = useState(-1);
-  const [deleteIndex, setDeleteIndex] = useState(-2);
+  const [deleteIndex, setDeleteIndex] = useState(INITIAL_INDEX);
   const [array, setArray] = useState<LinkedListNode<number>[]>([]);
   const [mark, setMark] = useState<LinkedListNode<number> | null>(null);
   const [i, setI] = useState(-1);
@@ -189,7 +190,7 @@ export const ListPage: React.FC = () => {
             await wait(SHORT_DELAY_IN_MS);
             list.deleteHead();
             setArray(list.toArray());
-            setDeleteIndex(-2);
+            setDeleteIndex(INITIAL_INDEX);
           }}
           disabled={list.getHead() === null}
           isLoader={deleteIndex === 0}
@@ -202,7 +203,7 @@ export const ListPage: React.FC = () => {
             await wait(SHORT_DELAY_IN_MS);
             list.deleteTail();
             setArray(list.toArray());
-            setDeleteIndex(-2);
+            setDeleteIndex(INITIAL_INDEX);
           }}
           disabled={list.getHead() === null}
           isLoader={deleteIndex === array.length - 1}
@@ -259,7 +260,7 @@ export const ListPage: React.FC = () => {
             resetState();
             setNumValue("");
             setIndexValue("");
-            setDeleteIndex(-2);
+            setDeleteIndex(-INITIAL_INDEX);
             setI(-1);
           }}
         />
