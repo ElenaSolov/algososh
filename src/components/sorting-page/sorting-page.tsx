@@ -9,6 +9,7 @@ import { getRandomArr, bubbleSort, selectionSort } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
 import { BUBBLE, SELECTION } from "../../constants/element-captions";
 import { INITIAL_INDEX } from "../../constants/initialValues";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const SortingPage: React.FC = () => {
   const [array, setArray] = useState<number[]>([]);
@@ -42,7 +43,6 @@ export const SortingPage: React.FC = () => {
 
   useEffect(() => {
     reset();
-    // gen = method === "bubble" ? bubbleSort() : selectionSort();
   }, [direction, method]);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export const SortingPage: React.FC = () => {
     if (!done) {
       setTimer = window.setInterval(() => {
         doStep();
-      }, 500);
+      }, SHORT_DELAY_IN_MS);
     }
     if (done) {
       window.clearInterval(setTimer);
