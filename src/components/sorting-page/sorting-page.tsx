@@ -63,7 +63,7 @@ export const SortingPage: React.FC = () => {
     setDone(false);
   };
 
-  function doStep() {
+  const doStep = () => {
     const action = gen.next();
     if (action.done) {
       setDone(true);
@@ -73,7 +73,7 @@ export const SortingPage: React.FC = () => {
       setI(action.value.i);
       setK(action.value.k);
     }
-  }
+  };
 
   const getState = (index: number) => {
     if (sorted) return ElementStates.Modified;

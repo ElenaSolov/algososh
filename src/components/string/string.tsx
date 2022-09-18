@@ -48,14 +48,14 @@ export const StringComponent: React.FC = () => {
     return reverseIterator(stringArray, setStep, setStringArray);
   }, [stringArray])();
 
-  function doStep() {
+  const doStep = () => {
     const action = gen.next();
     if (action.done) {
       setDone(true);
     } else {
       setStringArray(action.value);
     }
-  }
+  };
 
   useEffect(() => {
     let timer = window.setInterval(() => {
