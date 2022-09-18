@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useCallback, useEffect, useState } from "react";
 import stringStyles from "./string.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
@@ -8,6 +8,7 @@ import { ElementStates } from "../../types/element-states";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { DELAY_IN_MS } from "../../constants/delays";
 import { NOT_VALUED } from "../../constants/initialValues";
+import { reverseIterator } from "../../utils/utils";
 
 export const StringComponent: React.FC = () => {
   const [inputValue, setInputValue] = useState(NOT_VALUED);
@@ -43,25 +44,9 @@ export const StringComponent: React.FC = () => {
     return ElementStates.Default;
   };
 
-  function* reverseIterator() {
-    let start = 0;
-    let end = stringArray.length - 1;
-    let array = [...stringArray];
-    while (start < end) {
-      array[start] = stringArray[end];
-      array[end] = stringArray[start];
-
-      setStep((prevState) => {
-        return prevState + 1;
-      });
-      start++;
-      end--;
-      setStringArray(array);
-      yield array;
-    }
-  }
-
-  const gen = reverseIterator();
+  const gen = useCallback(() => {
+    return reverseIterator(stringArray, setStep, setStringArray);
+  }, [stringArray])();
 
   function doStep() {
     const action = gen.next();

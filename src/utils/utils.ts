@@ -76,6 +76,28 @@ export function* selectionSort(
   }
 }
 
+export function* reverseIterator(
+  stringArray: string[],
+  setStep: (prev: (prevState: number) => number) => void,
+  setStringArray: (array: string[]) => void
+) {
+  let start = 0;
+  let end = stringArray.length - 1;
+  let array = [...stringArray];
+  while (start < end) {
+    array[start] = stringArray[end];
+    array[end] = stringArray[start];
+
+    setStep((prevState: number) => {
+      return prevState + 1;
+    });
+    start++;
+    end--;
+    setStringArray(array);
+    yield array;
+  }
+}
+
 export const wait = (milliseconds: number) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
