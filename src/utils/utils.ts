@@ -16,10 +16,11 @@ export const getRandomArr = () => {
 };
 
 export const swap = (
-  arr: number[],
+  array: number[],
   firstIndex: number,
   secondIndex: number
 ): number[] => {
+  const arr = [...array];
   const temp = arr[firstIndex];
   arr[firstIndex] = arr[secondIndex];
   arr[secondIndex] = temp;
@@ -38,7 +39,7 @@ export function* bubbleSort(
         (direction.direction === Direction.Ascending && arr[k] > arr[k + 1]) ||
         (direction.direction === Direction.Descending && arr[k] < arr[k + 1])
       ) {
-        swap(arr, k, k + 1);
+        arr = swap(arr, k, k + 1);
       }
       yield { arr, i, k };
     }
@@ -66,11 +67,11 @@ export function* selectionSort(
       }
     }
     if (direction.direction === Direction.Ascending) {
-      swap(arr, i, min);
+      arr = swap(arr, i, min);
       yield { arr, i, k, min };
     }
     if (direction.direction === Direction.Descending) {
-      swap(arr, i, max);
+      arr = swap(arr, i, max);
       yield { arr, i, k, max };
     }
   }
