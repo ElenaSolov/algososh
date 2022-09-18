@@ -7,9 +7,10 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { NOT_VALUED } from "../../constants/initialValues";
 
 export const FibonacciPage: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number | string>("");
+  const [inputValue, setInputValue] = useState<number | string>(NOT_VALUED);
   const [array, setArray] = useState<number[]>([1, 1]);
   const [error, setError] = useState(false);
   const [done, setDone] = useState(true);
@@ -53,7 +54,7 @@ export const FibonacciPage: React.FC = () => {
           setStep((prev) => prev + 1);
           if (step === inputValue) {
             setDone(true);
-            setInputValue("");
+            setInputValue(NOT_VALUED);
           }
         }, DELAY_IN_MS);
       }
@@ -76,7 +77,7 @@ export const FibonacciPage: React.FC = () => {
           type="submit"
           text="Рассчитать"
           isLoader={!done}
-          disabled={inputValue === ""}
+          disabled={inputValue === NOT_VALUED}
         />
         <p className={stringStyles.text}>Максимальное число — 19</p>
       </form>

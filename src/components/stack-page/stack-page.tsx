@@ -10,9 +10,10 @@ import { wait } from "../../utils/utils";
 import Stack, { IStack } from "../../classes/Stack";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { TOP } from "../../constants/element-captions";
+import { NOT_VALUED } from "../../constants/initialValues";
 
 export const StackPage: React.FC = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(NOT_VALUED);
   const [stack] = useState<IStack<string>>(new Stack<string>());
   const [array, setArray] = useState<string[]>([]);
   const [top, setTop] = useState(-1);
@@ -34,7 +35,7 @@ export const StackPage: React.FC = () => {
     setDone(false);
     stack.push(inputValue);
     updateArray();
-    setInputValue("");
+    setInputValue(NOT_VALUED);
     setState(ElementStates.Changing);
     await wait(SHORT_DELAY_IN_MS);
     setState(ElementStates.Default);
@@ -54,7 +55,7 @@ export const StackPage: React.FC = () => {
   const reset = () => {
     stack.clear();
     updateArray();
-    setInputValue("");
+    setInputValue(NOT_VALUED);
   };
 
   useEffect(() => {
@@ -77,7 +78,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
-          disabled={inputValue === ""}
+          disabled={inputValue === NOT_VALUED}
           onClick={addValue}
           isLoader={!done}
         />

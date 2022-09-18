@@ -10,11 +10,12 @@ import { Circle } from "../ui/circle/circle";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import Queue, { IQueue } from "../../classes/Queue";
 import { HEAD, TAIL } from "../../constants/element-captions";
+import { NOT_VALUED } from "../../constants/initialValues";
 
 export const QueuePage: React.FC = () => {
   const maxArrayLength = 7;
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(NOT_VALUED);
   const [queue] = useState<IQueue<string>>(new Queue<string>(maxArrayLength));
   const [array, setArray] = useState<Array<string | undefined>>([]);
   const [mark, setMark] = useState(-1);
@@ -41,7 +42,7 @@ export const QueuePage: React.FC = () => {
     await wait(SHORT_DELAY_IN_MS);
     queue.enqueue(inputValue);
     setArray(queue.getStorage());
-    setInputValue("");
+    setInputValue(NOT_VALUED);
     await wait(SHORT_DELAY_IN_MS);
     setMark(-1);
     setDone(true);
@@ -63,7 +64,7 @@ export const QueuePage: React.FC = () => {
   const reset = () => {
     queue.clear();
     setArray(queue.getStorage());
-    setInputValue("");
+    setInputValue(NOT_VALUED);
   };
 
   useEffect(() => {
@@ -87,7 +88,9 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
-          disabled={queue.getTail() === maxArrayLength - 1 || inputValue === ""}
+          disabled={
+            queue.getTail() === maxArrayLength - 1 || inputValue === NOT_VALUED
+          }
           onClick={enqueue}
           isLoader={!done}
         />

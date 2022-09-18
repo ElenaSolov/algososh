@@ -7,9 +7,10 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import useMediaQuery from "../../hooks/useMediaQuery";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { NOT_VALUED } from "../../constants/initialValues";
 
 export const StringComponent: React.FC = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(NOT_VALUED);
   const [stringArray, setStringArray] = useState<Array<string>>([]);
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(true);
@@ -21,8 +22,8 @@ export const StringComponent: React.FC = () => {
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    setStringArray(inputValue.split(""));
-    setInputValue("");
+    setStringArray(inputValue.split(NOT_VALUED));
+    setInputValue(NOT_VALUED);
     setStep(0);
     setDone(false);
   };
@@ -91,7 +92,7 @@ export const StringComponent: React.FC = () => {
           type="submit"
           text="Развернуть"
           isLoader={!done}
-          disabled={inputValue === ""}
+          disabled={inputValue === NOT_VALUED}
         />
         <p className={stringStyles.text}>Максимум — 11 символов</p>
       </form>

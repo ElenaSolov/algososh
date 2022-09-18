@@ -12,14 +12,14 @@ import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import LinkedList from "../../classes/LinkedList";
 import LinkedListNode from "../../classes/LinkedListNode";
 import { HEAD, TAIL } from "../../constants/element-captions";
-import { INITIAL_INDEX } from "../../constants/initialValues";
+import { INITIAL_INDEX, NOT_VALUED } from "../../constants/initialValues";
 
 export const ListPage: React.FC = () => {
   const minArrLength = 3;
   const maxArrLength = 11;
 
-  const [numValue, setNumValue] = useState("");
-  const [indexValue, setIndexValue] = useState("");
+  const [numValue, setNumValue] = useState(NOT_VALUED);
+  const [indexValue, setIndexValue] = useState(NOT_VALUED);
   const [addIndex, setAddIndex] = useState(-1);
   const [deleteIndex, setDeleteIndex] = useState(INITIAL_INDEX);
   const [array, setArray] = useState<LinkedListNode<number>[]>([]);
@@ -108,7 +108,7 @@ export const ListPage: React.FC = () => {
   };
 
   const getDisabledStatus = (btn: string): boolean => {
-    if (indexValue === "") return true;
+    if (indexValue === NOT_VALUED) return true;
     else if (btn === "delete") {
       if (+indexValue >= array.length - 1 || +indexValue <= 0) {
         return true;
@@ -149,7 +149,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в head"
-          disabled={numValue === "" || array.length >= maxArrLength}
+          disabled={numValue === NOT_VALUED || array.length >= maxArrLength}
           onClick={async () => {
             setAddIndex(0);
             await showPlace(0);
@@ -159,7 +159,7 @@ export const ListPage: React.FC = () => {
             setAddIndex(-1);
             resetState();
             setI(-1);
-            setNumValue("");
+            setNumValue(NOT_VALUED);
           }}
           isLoader={addIndex === 0}
         />
@@ -175,11 +175,11 @@ export const ListPage: React.FC = () => {
             const newNode = list.append(+numValue);
             setMark(newNode);
             setArray(list.toArray());
-            setNumValue("");
+            setNumValue(NOT_VALUED);
             setAddIndex(-1);
             resetState();
           }}
-          disabled={numValue === "" || array.length >= maxArrLength}
+          disabled={numValue === NOT_VALUED || array.length >= maxArrLength}
           isLoader={addIndex === array.length}
         />
         <Button
@@ -222,8 +222,8 @@ export const ListPage: React.FC = () => {
           text="Добавить по индексу"
           extraClass={listStyles.addBtn}
           disabled={
-            numValue === "" ||
-            indexValue === "" ||
+            numValue === NOT_VALUED ||
+            indexValue === NOT_VALUED ||
             +indexValue <= 0 ||
             +indexValue > array.length - 2 ||
             array.length >= maxArrLength
@@ -236,8 +236,8 @@ export const ListPage: React.FC = () => {
             const newNode = list.addByIndex(+numValue, index);
             setMark(newNode);
             setArray(list.toArray());
-            setNumValue("");
-            setIndexValue("");
+            setNumValue(NOT_VALUED);
+            setIndexValue(NOT_VALUED);
             setAddIndex(-1);
             resetState();
             setI(-1);
@@ -249,7 +249,9 @@ export const ListPage: React.FC = () => {
           type="button"
           text="Удалить по индексу"
           extraClass={listStyles.deleteBtn}
-          disabled={indexValue === "" ? true : getDisabledStatus("delete")}
+          disabled={
+            indexValue === NOT_VALUED ? true : getDisabledStatus("delete")
+          }
           onClick={async () => {
             const index = +indexValue;
             await showPlace(index);
@@ -258,9 +260,9 @@ export const ListPage: React.FC = () => {
             list.deleteByIndex(index);
             setArray(list.toArray());
             resetState();
-            setNumValue("");
-            setIndexValue("");
-            setDeleteIndex(-INITIAL_INDEX);
+            setNumValue(NOT_VALUED);
+            setIndexValue(NOT_VALUED);
+            setDeleteIndex(INITIAL_INDEX);
             setI(-1);
           }}
         />
@@ -274,11 +276,15 @@ export const ListPage: React.FC = () => {
                 tail={getTail(node)}
                 state={node.state}
                 index={index}
-                letter={index === deleteIndex ? "" : node.value.toString()}
+                letter={
+                  index === deleteIndex ? NOT_VALUED : node.value.toString()
+                }
                 isSmall={isNotDesktop}
               />
               <span
-                className={index === array.length - 1 ? listStyles.arrow : ""}
+                className={
+                  index === array.length - 1 ? listStyles.arrow : NOT_VALUED
+                }
               >
                 <ArrowIcon />
               </span>
