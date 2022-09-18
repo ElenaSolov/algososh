@@ -43,8 +43,37 @@ export function* bubbleSort(
       yield { arr, i, k };
     }
   }
-  // setDone(true);
-  // setSorted(true);
+}
+export function* selectionSort(
+  array: number[],
+  direction: { direction: Direction }
+) {
+  const { length } = array;
+  let arr = array.slice();
+  let i, k: number;
+  for (i = 0; i < length; i++) {
+    let min: number = i;
+    let max: number = i;
+    for (k = i + 1; k < length; k++) {
+      yield { arr, i, k };
+      if (direction.direction === Direction.Ascending && arr[k] < arr[min]) {
+        min = k;
+      } else if (
+        direction.direction === Direction.Descending &&
+        arr[k] > arr[max]
+      ) {
+        max = k;
+      }
+    }
+    if (direction.direction === Direction.Ascending) {
+      swap(arr, i, min);
+      yield { arr, i, k, min };
+    }
+    if (direction.direction === Direction.Descending) {
+      swap(arr, i, max);
+      yield { arr, i, k, max };
+    }
+  }
 }
 
 export const wait = (milliseconds: number) => {

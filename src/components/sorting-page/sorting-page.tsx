@@ -5,7 +5,7 @@ import { Direction } from "../../types/direction";
 import { Button } from "../ui/button/button";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Column } from "../ui/column/column";
-import { getRandomArr, swap, bubbleSort } from "../../utils/utils";
+import { getRandomArr, bubbleSort, selectionSort } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
 import { BUBBLE, SELECTION } from "../../constants/element-captions";
 import { INITIAL_INDEX } from "../../constants/initialValues";
@@ -21,7 +21,9 @@ export const SortingPage: React.FC = () => {
   const [k, setK] = useState(INITIAL_INDEX);
   const [sorted, setSorted] = useState(false);
   let gen = useCallback(() => {
-    return method === BUBBLE ? bubbleSort(array, direction) : selectionSort();
+    return method === BUBBLE
+      ? bubbleSort(array, direction)
+      : selectionSort(array, direction);
   }, [method, direction])();
 
   const onValueChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,37 +62,6 @@ export const SortingPage: React.FC = () => {
     setDirection({ direction: dir });
     setDone(false);
   };
-
-  function* selectionSort() {
-    const { length } = array;
-    let arr = array.slice();
-    let i, k: number;
-    for (i = 0; i < length; i++) {
-      let min: number = i;
-      let max: number = i;
-      for (k = i + 1; k < length; k++) {
-        yield { arr, i, k };
-        if (direction.direction === Direction.Ascending && arr[k] < arr[min]) {
-          min = k;
-        } else if (
-          direction.direction === Direction.Descending &&
-          arr[k] > arr[max]
-        ) {
-          max = k;
-        }
-      }
-      if (direction.direction === Direction.Ascending) {
-        swap(arr, i, min);
-        yield { arr, i, k, min };
-      }
-      if (direction.direction === Direction.Descending) {
-        swap(arr, i, max);
-        yield { arr, i, k, max };
-      }
-    }
-    setDone(true);
-    setSorted(true);
-  }
 
   function doStep() {
     const action = gen.next();
