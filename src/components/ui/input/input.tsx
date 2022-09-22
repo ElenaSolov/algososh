@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./input.module.css";
+import { NOT_VALUED } from "../../../constants/initialValues";
 
 interface InputProps extends React.HTMLProps<HTMLInputElement> {
   placeholder?: string;
@@ -9,7 +10,7 @@ interface InputProps extends React.HTMLProps<HTMLInputElement> {
 
 export const Input: React.FC<InputProps> = ({
   placeholder = "Введите текст",
-  extraClass = "",
+  extraClass = NOT_VALUED,
   type = "text",
   maxLength,
   max,

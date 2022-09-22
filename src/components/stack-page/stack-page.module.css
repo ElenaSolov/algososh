@@ -1,8 +1,6 @@
 .container {
-    max-width: 512px;
     display: grid;
-    grid-template-columns: 377px 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 377px 1fr 1fr 1fr;
     margin: 0 auto;
     column-gap: 12px;
 }
@@ -11,21 +9,27 @@
     width: fit-content;
     padding-left: 12px;
 }
+.resetBtn{
+    margin-left: 68px;
+}
 .output{
+    list-style-type: none;
+    margin-top: 30px;
     display: flex;
+    gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-    list-style-type: none;
 }
 .listItem{
     margin-bottom: 10px;
-    margin-right: 10px;
+    margin-right: 20px;
 }
-
-@media screen and (max-width: 681px) {
+@media screen and (max-width: 1024px) {
     .container{
-        grid-template-columns: 1fr;
         row-gap: 10px;
+    }
+    .resetBtn{
+        margin-left: 20px;
     }
 
 }

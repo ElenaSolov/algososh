@@ -1,0 +1,50 @@
+.container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, min-content);
+    margin: 0 auto;
+    column-gap: 12px;
+}
+
+.text{
+    grid-column-start: 1;
+    grid-column-end: -1;
+    width: fit-content;
+    padding-left: 12px;
+}
+.addBtn{
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+.deleteBtn{
+    grid-column-start: 4;
+    grid-column-end: -1;
+}
+.output{
+    list-style-type: none;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.circle{
+    margin-bottom: 10px;
+}
+.item{
+    display: flex;
+    align-items: center;
+    margin-top: 85px;
+}
+.arrow:last-of-type{
+    display: none;
+}
+@media screen and (max-width: 1024px) {
+    .container{
+        row-gap: 10px;
+    }
+    .resetBtn{
+        margin-left: 20px;
+    }
+
+}
