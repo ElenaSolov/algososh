@@ -3,12 +3,12 @@ import React from "react";
 import renderer from "react-test-renderer";
 import { render, fireEvent, screen } from "@testing-library/react";
 
-describe("Button renders correctly", () => {
-  it("Button without text renders correctly", () => {
+describe("Button rendered correctly", () => {
+  it("Button without text rendered correctly", () => {
     const button = renderer.create(<Button />).toJSON();
     expect(button).toMatchSnapshot();
   });
-  it("Button with text renders correctly", () => {
+  it("Button with text rendered correctly", () => {
     const button = renderer.create(<Button text="Test" />).toJSON();
     expect(button).toMatchSnapshot();
   });
@@ -18,7 +18,7 @@ describe("Button renders correctly", () => {
       .toJSON();
     expect(button).toMatchSnapshot();
   });
-  it("Loader renders correctly and button with loader is disabled", () => {
+  it("Loader rendered correctly and button with loader is disabled", () => {
     const button = renderer
       .create(<Button text="Test" isLoader={true} />)
       .toJSON();
