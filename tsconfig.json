@@ -6,6 +6,11 @@
       "dom.iterable",
       "esnext"
     ],
+
+  "env": {
+    "test": { "presets": ["react-app"] }
+  }
+,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
