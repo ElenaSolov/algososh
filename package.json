@@ -2,6 +2,7 @@
   "name": "algorithms-project",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/user-event": "^13.5.0",
@@ -11,6 +12,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-test-renderer": "17.0.0 - 17.9.9",
     "@types/uuid": "^8.3.4",
+    "cypress": "10.8.0",
     "nanoid": "^3.2.0",
     "react": "^17.0.2",
     "react-document-title": "^2.0.3",
@@ -26,7 +28,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -50,7 +53,8 @@
     "@testing-library/react": "^12.1.5",
     "@types/react-document-title": "^2.0.5",
     "@types/react-router-dom": "^5.3.3",
-    "react-test-renderer": "17.0.0 - 17.9.9",
-    "prettier": "2.6.2"
+    "eslint-plugin-cypress": "^2.12.1",
+    "prettier": "2.6.2",
+    "react-test-renderer": "17.0.0 - 17.9.9"
   }
 }
