@@ -1,19 +1,14 @@
 import React from "react";
 import { StringComponent } from "./string";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { DELAY_IN_MS } from "../../constants/delays";
+import { useMatchMedia } from "../../hooks/useMatchMedia";
+import { act } from "react-dom/test-utils";
 
 describe("<StringComponent />", () => {
-  window.matchMedia =
-    window.matchMedia ||
-    function () {
-      return {
-        matches: false,
-        addEventListener: function () {},
-        removeEventListener: function () {},
-      };
-    };
+  window.matchMedia = useMatchMedia();
+
   const testString = (value: string, result: string) => {
     jest.useFakeTimers();
     const { container } = render(
@@ -25,7 +20,9 @@ describe("<StringComponent />", () => {
     const button = screen.getByText("Развернуть");
     fireEvent.change(input, { target: { value } });
     fireEvent.click(button);
-    jest.advanceTimersByTime(DELAY_IN_MS * 3);
+    act(() => {
+      jest.advanceTimersByTime(DELAY_IN_MS * 3);
+    });
 
     const letters = Array.from(container.querySelectorAll(".text_type_circle"))
       .map((letter) => letter.textContent)
