@@ -78,6 +78,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
+          extraClass="cyAddButton"
           disabled={inputValue === NOT_VALUED}
           onClick={addValue}
           isLoader={!done}
