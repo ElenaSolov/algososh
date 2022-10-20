@@ -66,6 +66,7 @@ export const ListPage: React.FC = () => {
     if (array[i] === node && addIndex >= 0) {
       return (
         <Circle
+          extraClass="cyHeadCircle"
           letter={numValue}
           state={ElementStates.Changing}
           isSmall={true}
@@ -75,6 +76,7 @@ export const ListPage: React.FC = () => {
     if (node === list.getHead()) {
       return addIndex === 0 ? (
         <Circle
+          extraClass="cyTailCircle"
           letter={numValue}
           state={ElementStates.Changing}
           isSmall={true}
@@ -138,6 +140,7 @@ export const ListPage: React.FC = () => {
       >
         <Input
           autoFocus
+          extraClass="cyValueInput"
           placeholder="Введите значение"
           value={numValue}
           type="number"
@@ -214,6 +217,7 @@ export const ListPage: React.FC = () => {
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
         <Input
+          extraClass="cyIndexInput"
           placeholder="Введите индекс"
           value={indexValue}
           type="number"
