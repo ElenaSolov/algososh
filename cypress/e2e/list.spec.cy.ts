@@ -11,6 +11,7 @@ import {
   defaultColor,
   deleteByIndexButtonSelector,
   indexInputSelector,
+  listElementSelector,
   modifiedColor,
   valueInputSelector,
 } from "../support/constants";
@@ -138,6 +139,53 @@ describe("Queue page", () => {
       expect(nums).to.have.length(defaultListLength + 1);
       for (let i = 0; i <= defaultListLength; i++) {
         cy.wrap(nums).eq(i).should("have.css", "border-color", defaultColor);
+      }
+    });
+  });
+  it("AddByIndex button adds value correctly", () => {
+    const value = "1";
+    const index = 1;
+
+    cy.clock();
+
+    cy.get(valueInputSelector).type(value);
+    cy.get(indexInputSelector).type(index.toString());
+    cy.get(addByIndexButtonSelector).click();
+    cy.get(listElementSelector).then((nums) => {
+      for (let i = 0; i <= index; i++) {
+        cy.wrap(nums)
+          .eq(i)
+          .find(circleSelector)
+          .should("have.css", "border-color", changingColor);
+        cy.wrap(nums)
+          .eq(i)
+          .find(circleHeadSelector)
+          .find(circleSelector)
+          .should("have.css", "border-color", changingColor)
+          .contains(value);
+        cy.tick(SHORT_DELAY_IN_MS);
+      }
+    });
+    cy.get(listElementSelector).then((nums) => {
+      expect(nums).have.length(defaultListLength + 1);
+      cy.wrap(nums)
+        .eq(index)
+        .find(circleSelector)
+        .should("have.css", "border-color", modifiedColor)
+        .contains(value);
+      cy.wrap(nums)
+        .eq(index)
+        .find(circleIndexSelector)
+        .should("have.text", index.toString());
+    });
+    cy.tick(SHORT_DELAY_IN_MS);
+    cy.get(listElementSelector).then((nums) => {
+      expect(nums).have.length(defaultListLength + 1);
+      for (let i = 0; i <= defaultListLength; i++) {
+        cy.wrap(nums)
+          .eq(i)
+          .find(circleSelector)
+          .should("have.css", "border-color", defaultColor);
       }
     });
   });

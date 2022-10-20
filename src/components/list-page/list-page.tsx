@@ -280,6 +280,7 @@ export const ListPage: React.FC = () => {
           {array.map((node, index) => (
             <li className={listStyles.item} key={index}>
               <Circle
+                extraClass="cyListElement"
                 head={getHead(node)}
                 tail={getTail(node)}
                 state={node.state}

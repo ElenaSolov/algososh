@@ -24,4 +24,5 @@ export const circleIndexSelector = "[class*=circle_index]";
 
 export const circleHeadExtraSelector = ".cyHeadCircle";
 export const circleTailExtraSelector = ".cyTailCircle";
-export const circleSmallSelector = "[class*=circle_small]";
+
+export const listElementSelector = ".cyListElement";
