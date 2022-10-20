@@ -88,6 +88,7 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
+          extraClass="cyAddButton"
           disabled={
             queue.getTail() === maxArrayLength - 1 || inputValue === NOT_VALUED
           }
