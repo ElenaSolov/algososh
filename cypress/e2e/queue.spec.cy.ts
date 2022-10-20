@@ -6,10 +6,13 @@ import {
   circleIndexSelector,
   circleSelector,
   circleTailSelector,
+  defaultColor,
+  deleteButtonSelector,
   inputSelector,
 } from "../support/constants";
-import { DELAY_IN_MS } from "../../src/constants/delays";
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from "../../src/constants/delays";
 import { HEAD, TAIL } from "../../src/constants/element-captions";
+import { maxArrayLength } from "../../src/constants/initialValues";
 
 describe("Queue page", () => {
   beforeEach(() => {
@@ -49,5 +52,54 @@ describe("Queue page", () => {
       });
       cy.tick(DELAY_IN_MS);
     }
+  });
+  it("Elements are deleted from the stack correctly", () => {
+    cy.clock();
+    for (let i = 0; i < arrayToAdd.length; i++) {
+      cy.get(inputSelector).type(arrayToAdd[i].toString());
+      cy.get(addButtonSelector).click();
+      cy.tick(DELAY_IN_MS);
+      cy.tick(DELAY_IN_MS);
+    }
+    cy.get(circleSelector).then((nums) => {
+      expect(nums).to.have.length(maxArrayLength);
+      for (let i = 0; i < maxArrayLength; i++) {
+        cy.wrap(nums)
+          .eq(i)
+          .should("have.css", "border-color", defaultColor)
+          .should(
+            "have.text",
+            i < arrayToAdd.length ? arrayToAdd[i].toString() : ""
+          );
+      }
+      for (let i = 0; i < arrayToAdd.length; i++) {
+        cy.get(deleteButtonSelector).click();
+        cy.get(circleSelector).then((nums) => {
+          cy.wrap(nums)
+            .eq(i)
+            .should("have.css", "border-color", changingColor)
+            .should("have.text", arrayToAdd[i].toString());
+        });
+        cy.tick(SHORT_DELAY_IN_MS);
+        cy.tick(SHORT_DELAY_IN_MS);
+        cy.get(circleSelector).then((nums) => {
+          cy.wrap(nums)
+            .eq(i)
+            .should("have.css", "border-color", defaultColor)
+            .should("have.text", "");
+        });
+        cy.get(circleContentSelector).then((nums) => {
+          cy.wrap(nums)
+            .eq(i + 1)
+            .contains(HEAD);
+        });
+      }
+      cy.get(deleteButtonSelector).should("be.disabled");
+      cy.get(circleSelector).then((nums) => {
+        for (let i = 0; i < maxArrayLength; i++) {
+          cy.wrap(nums).eq(i).should("have.text", "");
+        }
+      });
+    });
   });
 });
