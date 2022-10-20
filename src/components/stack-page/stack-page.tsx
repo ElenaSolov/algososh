@@ -86,6 +86,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить"
+          extraClass="cyDeleteButton"
           onClick={deleteValue}
           disabled={array.length <= 0}
           isLoader={!done}

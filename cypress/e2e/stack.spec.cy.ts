@@ -3,21 +3,22 @@ import {
   changingColor,
   circleSelector,
   defaultColor,
+  deleteButtonSelector,
   inputSelector,
 } from "../support/constants";
-import { SHORT_DELAY_IN_MS } from "../../src/constants/delays";
+import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from "../../src/constants/delays";
 
 describe("Stack page", () => {
   beforeEach(() => {
     cy.visit("/stack");
   });
+  const arrayToAdd = [1, 2, 3];
 
   it("Button is disabled when input is empty", () => {
     cy.get(inputSelector).clear();
     cy.get(addButtonSelector).should("be.disabled");
   });
   it("Elements are added to the stack correctly", () => {
-    const arrayToAdd = [1, 2, 3];
     cy.clock();
     for (let i = 0; i < arrayToAdd.length; i++) {
       cy.get(inputSelector).type(arrayToAdd[i].toString());
@@ -43,6 +44,35 @@ describe("Stack page", () => {
           }
         }
       });
+    }
+  });
+  it("Elements are deleted from stack correctly", () => {
+    for (let i = 0; i < arrayToAdd.length; i++) {
+      cy.get(inputSelector).type(arrayToAdd[i].toString());
+      cy.get(addButtonSelector).click();
+    }
+    cy.get(circleSelector).then((nums) => {
+      expect(nums).length.to.have.length(arrayToAdd.length);
+    });
+    cy.clock();
+    cy.tick(DELAY_IN_MS);
+    for (let i = 0; i < arrayToAdd.length; i++) {
+      cy.get(deleteButtonSelector).click();
+      cy.get(circleSelector).then((nums) => {
+        expect(nums).length.to.have.length(arrayToAdd.length - i);
+        cy.wrap(nums)
+          .eq(arrayToAdd.length - i - 1)
+          .should("have.css", "border-color", changingColor);
+      });
+      cy.tick(DELAY_IN_MS);
+      if (i < arrayToAdd.length - 1) {
+        cy.get(circleSelector).then((nums) => {
+          expect(nums).length.to.have.length(arrayToAdd.length - i - 1);
+        });
+      } else {
+        cy.get(circleSelector).should("not.exist");
+        cy.get(deleteButtonSelector).should("be.disabled");
+      }
     }
   });
 });

@@ -6,3 +6,4 @@ export const changingColor = "rgb(210, 82, 225)";
 export const modifiedColor = "rgb(127, 224, 81)";
 
 export const addButtonSelector = ".cyAddButton";
+export const deleteButtonSelector = ".cyDeleteButton";
