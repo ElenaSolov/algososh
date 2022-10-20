@@ -5,6 +5,7 @@ import {
   defaultColor,
   deleteButtonSelector,
   inputSelector,
+  resetButtonSelector,
 } from "../support/constants";
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from "../../src/constants/delays";
 
@@ -74,5 +75,17 @@ describe("Stack page", () => {
         cy.get(deleteButtonSelector).should("be.disabled");
       }
     }
+  });
+  it("Reset button deletes all the elements from the stack", () => {
+    for (let i = 0; i < arrayToAdd.length; i++) {
+      cy.get(inputSelector).type(arrayToAdd[i].toString());
+      cy.get(addButtonSelector).click();
+    }
+    cy.get(circleSelector).then((nums) => {
+      expect(nums).length.to.have.length(arrayToAdd.length);
+    });
+    cy.get(resetButtonSelector).click();
+    cy.get(circleSelector).should("not.exist");
+    cy.get(resetButtonSelector).should("be.disabled");
   });
 });

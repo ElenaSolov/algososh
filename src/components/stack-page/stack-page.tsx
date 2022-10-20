@@ -94,7 +94,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Очистить"
-          extraClass={stackStyles.resetBtn}
+          extraClass={`${stackStyles.resetBtn} cyResetButton`}
           onClick={reset}
           disabled={array.length <= 0}
         />
