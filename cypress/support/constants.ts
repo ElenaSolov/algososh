@@ -7,7 +7,13 @@ export const changingColor = "rgb(210, 82, 225)";
 export const modifiedColor = "rgb(127, 224, 81)";
 
 export const addButtonSelector = ".cyAddButton";
+export const addToHeadButtonSelector = ".cyAddToHeadButton";
+export const addToTailButtonSelector = ".cyAddToTailButton";
+export const addByIndexButtonSelector = ".cyAddByIndexButton";
 export const deleteButtonSelector = ".cyDeleteButton";
+export const deleteFromHeadButtonSelector = ".cyDeleteFromHeadButton";
+export const deleteFromTailButtonSelector = ".cyDeleteFromTailButton";
+export const deleteByIndexButtonSelector = ".cyDeleteByIndexButton";
 export const resetButtonSelector = ".cyResetButton";
 
 export const circleHeadSelector = "[class*=circle_head]";

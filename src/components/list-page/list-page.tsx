@@ -149,6 +149,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в head"
+          extraClass="cyAddToHeadButton"
           disabled={numValue === NOT_VALUED || array.length >= maxArrLength}
           onClick={async () => {
             setAddIndex(0);
@@ -166,6 +167,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в tail"
+          extraClass="cyAddToTailButton"
           onClick={async () => {
             setAddIndex(array.length);
             if (array.length > 0) {
@@ -185,6 +187,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить из head"
+          extraClass="cyDeleteFromHeadButton"
           onClick={async () => {
             setDeleteIndex(0);
             await wait(SHORT_DELAY_IN_MS);
@@ -198,6 +201,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить из tail"
+          extraClass="cyDeleteFromTailButton"
           onClick={async () => {
             setDeleteIndex(array.length - 1);
             await wait(SHORT_DELAY_IN_MS);
@@ -220,7 +224,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить по индексу"
-          extraClass={listStyles.addBtn}
+          extraClass={`${listStyles.addBtn} cyAddByIndexButton`}
           disabled={
             numValue === NOT_VALUED ||
             indexValue === NOT_VALUED ||
@@ -248,7 +252,7 @@ export const ListPage: React.FC = () => {
           isLoader={deleteIndex > 0 && deleteIndex < array.length - 1}
           type="button"
           text="Удалить по индексу"
-          extraClass={listStyles.deleteBtn}
+          extraClass={`${listStyles.deleteBtn} cyDeleteByIndexButton`}
           disabled={
             indexValue === NOT_VALUED ? true : getDisabledStatus("delete")
           }
