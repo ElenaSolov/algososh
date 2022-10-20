@@ -98,4 +98,47 @@ describe("Queue page", () => {
       }
     });
   });
+  it("addToTail button adds element correctly", () => {
+    cy.clock();
+    cy.get(valueInputSelector).type(arrayToAdd[0].toString());
+    cy.get(addToTailButtonSelector).click();
+    cy.get(circleContentSelector).then((nums) => {
+      expect(nums).to.have.length(defaultListLength + 1);
+      cy.wrap(nums)
+        .eq(defaultListLength - 1)
+        .find(circleSelector)
+        .should("have.css", "border-color", changingColor);
+      cy.wrap(nums)
+        .eq(defaultListLength - 1)
+        .find(circleHeadSelector)
+        .find(circleSelector)
+        .should("have.css", "border-color", changingColor)
+        .contains(arrayToAdd[0].toString());
+      for (let i = 0; i < defaultListLength - 1; i++) {
+        cy.wrap(nums)
+          .eq(i)
+          .find(circleSelector)
+          .should("have.css", "border-color", defaultColor);
+      }
+    });
+    cy.tick(SHORT_DELAY_IN_MS);
+    cy.get(circleContentSelector).then((nums) => {
+      cy.wrap(nums)
+        .eq(defaultListLength)
+        .find(circleSelector)
+        .should("have.css", "border-color", modifiedColor)
+        .contains(arrayToAdd[0].toString());
+      cy.wrap(nums)
+        .eq(defaultListLength)
+        .find(circleTailSelector)
+        .contains(TAIL);
+    });
+    cy.tick(SHORT_DELAY_IN_MS);
+    cy.get(circleSelector).then((nums) => {
+      expect(nums).to.have.length(defaultListLength + 1);
+      for (let i = 0; i <= defaultListLength; i++) {
+        cy.wrap(nums).eq(i).should("have.css", "border-color", defaultColor);
+      }
+    });
+  });
 });
