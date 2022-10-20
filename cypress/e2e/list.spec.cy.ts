@@ -11,6 +11,7 @@ import {
   defaultColor,
   deleteByIndexButtonSelector,
   deleteFromHeadButtonSelector,
+  deleteFromTailButtonSelector,
   indexInputSelector,
   listElementSelector,
   modifiedColor,
@@ -190,18 +191,46 @@ describe("Queue page", () => {
   //     }
   //   });
   // });
-  it("DeleteFromHead button works correctly", () => {
+  // it("DeleteFromHead button works correctly", () => {
+  //   cy.clock();
+  //   cy.get(deleteFromHeadButtonSelector).click();
+  //   cy.get(listElementSelector).then((nums) => {
+  //     cy.wrap(nums)
+  //       .eq(0)
+  //       .find(circleTailSelector)
+  //       .find(circleSelector)
+  //       .should("have.css", "border-color", changingColor)
+  //       .should("not.be.empty");
+  //     cy.wrap(nums)
+  //       .eq(0)
+  //       .find(circleSelector)
+  //       .eq(0)
+  //       .should("have.text", "")
+  //       .should("have.css", "border-color", defaultColor);
+  //   });
+  //   cy.tick(SHORT_DELAY_IN_MS);
+  //   cy.get(listElementSelector).then((nums) => {
+  //     expect(nums).to.have.length(defaultListLength - 1);
+  //     cy.wrap(nums).eq(0).find(circleHeadSelector).should("have.text", HEAD);
+  //     cy.wrap(nums).eq(0).find(circleSelector).should("not.have.text", "");
+  //     cy.wrap(nums).eq(0).find(circleIndexSelector).should("have.text", "0");
+  //   });
+  // });
+  it("DeleteFromTail button works correctly", () => {
     cy.clock();
-    cy.get(deleteFromHeadButtonSelector).click();
+    cy.get(listElementSelector).then((nums) => {
+      expect(nums).to.have.length(defaultListLength);
+    });
+    cy.get(deleteFromTailButtonSelector).click();
     cy.get(listElementSelector).then((nums) => {
       cy.wrap(nums)
-        .eq(0)
+        .eq(defaultListLength - 1)
         .find(circleTailSelector)
         .find(circleSelector)
         .should("have.css", "border-color", changingColor)
         .should("not.be.empty");
       cy.wrap(nums)
-        .eq(0)
+        .eq(defaultListLength - 1)
         .find(circleSelector)
         .eq(0)
         .should("have.text", "")
@@ -210,9 +239,18 @@ describe("Queue page", () => {
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(listElementSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength - 1);
-      cy.wrap(nums).eq(0).find(circleHeadSelector).should("have.text", HEAD);
-      cy.wrap(nums).eq(0).find(circleSelector).should("not.have.text", "");
-      cy.wrap(nums).eq(0).find(circleIndexSelector).should("have.text", "0");
+      cy.wrap(nums)
+        .eq(defaultListLength - 2)
+        .find(circleTailSelector)
+        .should("have.text", TAIL);
+      cy.wrap(nums)
+        .eq(defaultListLength - 2)
+        .find(circleSelector)
+        .should("not.have.text", "");
+      cy.wrap(nums)
+        .eq(defaultListLength - 2)
+        .find(circleIndexSelector)
+        .should("have.text", defaultListLength - 2);
     });
   });
 });
