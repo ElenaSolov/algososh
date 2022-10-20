@@ -9,6 +9,7 @@ import {
   defaultColor,
   deleteButtonSelector,
   inputSelector,
+  resetButtonSelector,
 } from "../support/constants";
 import { DELAY_IN_MS, SHORT_DELAY_IN_MS } from "../../src/constants/delays";
 import { HEAD, TAIL } from "../../src/constants/element-captions";
@@ -100,6 +101,33 @@ describe("Queue page", () => {
           cy.wrap(nums).eq(i).should("have.text", "");
         }
       });
+    });
+  });
+  it("Reset button deletes all the elements of the queue", () => {
+    cy.clock();
+    for (let i = 0; i < arrayToAdd.length; i++) {
+      cy.get(inputSelector).type(arrayToAdd[i].toString());
+      cy.get(addButtonSelector).click();
+      cy.tick(DELAY_IN_MS);
+      cy.tick(DELAY_IN_MS);
+    }
+    cy.get(circleSelector).then((nums) => {
+      expect(nums).to.have.length(maxArrayLength);
+      for (let i = 0; i < maxArrayLength; i++) {
+        cy.wrap(nums)
+          .eq(i)
+          .should("have.css", "border-color", defaultColor)
+          .should(
+            "have.text",
+            i < arrayToAdd.length ? arrayToAdd[i].toString() : ""
+          );
+      }
+    });
+    cy.get(resetButtonSelector).click();
+    cy.get(circleSelector).then((nums) => {
+      for (let i = 0; i < maxArrayLength; i++) {
+        cy.wrap(nums).eq(i).should("have.text", "");
+      }
     });
   });
 });
