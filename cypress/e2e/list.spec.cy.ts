@@ -2,6 +2,7 @@ import {
   addByIndexButtonSelector,
   addToHeadButtonSelector,
   addToTailButtonSelector,
+  borderColor,
   changingColor,
   circleContentSelector,
   circleHeadSelector,
@@ -12,9 +13,14 @@ import {
   deleteByIndexButtonSelector,
   deleteFromHeadButtonSelector,
   deleteFromTailButtonSelector,
+  emptyString,
+  haveCss,
+  haveText,
   indexInputSelector,
   listElementSelector,
   modifiedColor,
+  notBeEmpty,
+  notHaveText,
   valueInputSelector,
 } from "../support/constants";
 import { defaultListLength } from "../../src/constants/initialValues";
@@ -43,21 +49,21 @@ describe("Queue page", () => {
     cy.get(circleContentSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength);
       for (let i = 0; i < defaultListLength; i++) {
-        cy.wrap(nums).eq(i).find(".text_type_circle").should("not.be.empty");
+        cy.wrap(nums).eq(i).find(".text_type_circle").should(notBeEmpty);
         cy.wrap(nums)
           .eq(i)
           .find(circleHeadSelector)
-          .should("have.text", i === 0 ? HEAD : "");
+          .should(haveText, i === 0 ? HEAD : emptyString);
         cy.wrap(nums)
           .eq(i)
           .find(circleTailSelector)
-          .should("have.text", i === defaultListLength - 1 ? TAIL : "");
+          .should(haveText, i === defaultListLength - 1 ? TAIL : emptyString);
         cy.wrap(nums).eq(i).find(circleIndexSelector).contains(i.toString());
       }
     });
     cy.get(circleSelector).then((nums) => {
       for (let i = 0; i < defaultListLength; i++) {
-        cy.wrap(nums).eq(i).should("have.css", "border-color", defaultColor);
+        cy.wrap(nums).eq(i).should(haveCss, borderColor, defaultColor);
       }
     });
   });
@@ -70,18 +76,18 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(0)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor);
+        .should(haveCss, borderColor, changingColor);
       cy.wrap(nums)
         .eq(0)
         .find(circleHeadSelector)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(arrayToAdd[0].toString());
       for (let i = 2; i <= defaultListLength; i++) {
         cy.wrap(nums)
           .eq(i)
           .find(circleSelector)
-          .should("have.css", "border-color", defaultColor);
+          .should(haveCss, borderColor, defaultColor);
       }
     });
     cy.tick(SHORT_DELAY_IN_MS);
@@ -89,7 +95,7 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(0)
         .find(circleSelector)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(arrayToAdd[0].toString());
       cy.wrap(nums).eq(0).find(circleHeadSelector).contains(HEAD);
     });
@@ -97,7 +103,7 @@ describe("Queue page", () => {
     cy.get(circleSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength + 1);
       for (let i = 0; i <= defaultListLength; i++) {
-        cy.wrap(nums).eq(i).should("have.css", "border-color", defaultColor);
+        cy.wrap(nums).eq(i).should(haveCss, borderColor, defaultColor);
       }
     });
   });
@@ -110,18 +116,18 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(defaultListLength - 1)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor);
+        .should(haveCss, borderColor, changingColor);
       cy.wrap(nums)
         .eq(defaultListLength - 1)
         .find(circleHeadSelector)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(arrayToAdd[0].toString());
       for (let i = 0; i < defaultListLength - 1; i++) {
         cy.wrap(nums)
           .eq(i)
           .find(circleSelector)
-          .should("have.css", "border-color", defaultColor);
+          .should(haveCss, borderColor, defaultColor);
       }
     });
     cy.tick(SHORT_DELAY_IN_MS);
@@ -129,7 +135,7 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(defaultListLength)
         .find(circleSelector)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(arrayToAdd[0].toString());
       cy.wrap(nums)
         .eq(defaultListLength)
@@ -140,7 +146,7 @@ describe("Queue page", () => {
     cy.get(circleSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength + 1);
       for (let i = 0; i <= defaultListLength; i++) {
-        cy.wrap(nums).eq(i).should("have.css", "border-color", defaultColor);
+        cy.wrap(nums).eq(i).should(haveCss, borderColor, defaultColor);
       }
     });
   });
@@ -158,12 +164,12 @@ describe("Queue page", () => {
         cy.wrap(nums)
           .eq(i)
           .find(circleSelector)
-          .should("have.css", "border-color", changingColor);
+          .should(haveCss, borderColor, changingColor);
         cy.wrap(nums)
           .eq(i)
           .find(circleHeadSelector)
           .find(circleSelector)
-          .should("have.css", "border-color", changingColor)
+          .should(haveCss, borderColor, changingColor)
           .contains(value);
         cy.tick(SHORT_DELAY_IN_MS);
       }
@@ -173,12 +179,12 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(index)
         .find(circleSelector)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(value);
       cy.wrap(nums)
         .eq(index)
         .find(circleIndexSelector)
-        .should("have.text", index.toString());
+        .should(haveText, index.toString());
     });
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(listElementSelector).then((nums) => {
@@ -187,7 +193,7 @@ describe("Queue page", () => {
         cy.wrap(nums)
           .eq(i)
           .find(circleSelector)
-          .should("have.css", "border-color", defaultColor);
+          .should(haveCss, borderColor, defaultColor);
       }
     });
   });
@@ -199,21 +205,21 @@ describe("Queue page", () => {
         .eq(0)
         .find(circleTailSelector)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor)
-        .should("not.be.empty");
+        .should(haveCss, borderColor, changingColor)
+        .should(notBeEmpty);
       cy.wrap(nums)
         .eq(0)
         .find(circleSelector)
         .eq(0)
-        .should("have.text", "")
-        .should("have.css", "border-color", defaultColor);
+        .should(haveText, emptyString)
+        .should(haveCss, borderColor, defaultColor);
     });
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(listElementSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength - 1);
-      cy.wrap(nums).eq(0).find(circleHeadSelector).should("have.text", HEAD);
-      cy.wrap(nums).eq(0).find(circleSelector).should("not.have.text", "");
-      cy.wrap(nums).eq(0).find(circleIndexSelector).should("have.text", "0");
+      cy.wrap(nums).eq(0).find(circleHeadSelector).should(haveText, HEAD);
+      cy.wrap(nums).eq(0).find(circleSelector).should(notHaveText, emptyString);
+      cy.wrap(nums).eq(0).find(circleIndexSelector).should(haveText, "0");
     });
   });
   it("DeleteFromTail button works correctly", () => {
@@ -227,14 +233,14 @@ describe("Queue page", () => {
         .eq(defaultListLength - 1)
         .find(circleTailSelector)
         .find(circleSelector)
-        .should("have.css", "border-color", changingColor)
-        .should("not.be.empty");
+        .should(haveCss, borderColor, changingColor)
+        .should(notBeEmpty);
       cy.wrap(nums)
         .eq(defaultListLength - 1)
         .find(circleSelector)
         .eq(0)
-        .should("have.text", "")
-        .should("have.css", "border-color", defaultColor);
+        .should(haveText, emptyString)
+        .should(haveCss, borderColor, defaultColor);
     });
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(listElementSelector).then((nums) => {
@@ -242,15 +248,15 @@ describe("Queue page", () => {
       cy.wrap(nums)
         .eq(defaultListLength - 2)
         .find(circleTailSelector)
-        .should("have.text", TAIL);
+        .should(haveText, TAIL);
       cy.wrap(nums)
         .eq(defaultListLength - 2)
         .find(circleSelector)
-        .should("not.have.text", "");
+        .should(notHaveText, emptyString);
       cy.wrap(nums)
         .eq(defaultListLength - 2)
         .find(circleIndexSelector)
-        .should("have.text", defaultListLength - 2);
+        .should(haveText, defaultListLength - 2);
     });
   });
   it("DeleteByIndex button works correctly", () => {
@@ -262,36 +268,36 @@ describe("Queue page", () => {
       cy.get(circleSelector).then((nums) => {
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", changingColor)
-          .should("not.be.empty");
+          .should(haveCss, borderColor, changingColor)
+          .should(notBeEmpty);
         cy.wrap(nums)
           .eq(i + 1)
-          .should("have.css", "border-color", defaultColor)
-          .should("not.be.empty");
+          .should(haveCss, borderColor, defaultColor)
+          .should(notBeEmpty);
         cy.tick(SHORT_DELAY_IN_MS);
       });
     }
     cy.get(listElementSelector)
       .eq(index)
       .find(circleSelector)
-      .should("not.have.text", "");
+      .should(notHaveText, emptyString);
     cy.get(listElementSelector)
       .eq(index)
       .find(circleIndexSelector)
-      .should("have.text", index);
+      .should(haveText, index);
     cy.get(listElementSelector)
       .eq(index)
       .find(circleTailSelector)
       .find(circleSelector)
-      .should("have.css", "border-color", changingColor)
-      .should("not.be.empty");
+      .should(haveCss, borderColor, changingColor)
+      .should(notBeEmpty);
     cy.tick(SHORT_DELAY_IN_MS);
     cy.get(circleSelector).then((nums) => {
       expect(nums).to.have.length(defaultListLength - 1);
       cy.wrap(nums).each((num) => {
         cy.wrap(num)
-          .should("have.css", "border-color", defaultColor)
-          .should("not.be.empty");
+          .should(haveCss, borderColor, defaultColor)
+          .should(notBeEmpty);
       });
     });
   });

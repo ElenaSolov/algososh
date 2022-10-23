@@ -26,3 +26,12 @@ export const circleHeadExtraSelector = ".cyHeadCircle";
 export const circleTailExtraSelector = ".cyTailCircle";
 
 export const listElementSelector = ".cyListElement";
+
+export const emptyString = "";
+export const haveCss = "have.css";
+export const borderColor = "border-color";
+export const notBeEmpty = "not.be.empty";
+export const haveText = "have.text";
+export const notHaveText = "not.have.text";
+export const beDisabled = "be.disabled";
+export const notExist = "not.exist";

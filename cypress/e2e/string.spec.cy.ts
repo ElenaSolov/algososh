@@ -1,7 +1,9 @@
 import {
+  borderColor,
   changingColor,
   circleSelector,
   defaultColor,
+  haveCss,
   inputSelector,
   modifiedColor,
   submitBtnSelector,
@@ -26,53 +28,53 @@ describe("Spring page", () => {
       expect(letters).to.have.length(4);
       cy.wrap(letters)
         .eq(0)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(1);
       cy.wrap(letters)
         .eq(1)
-        .should("have.css", "border-color", defaultColor)
+        .should(haveCss, borderColor, defaultColor)
         .contains(2);
       cy.wrap(letters)
         .eq(2)
-        .should("have.css", "border-color", defaultColor)
+        .should(haveCss, borderColor, defaultColor)
         .contains(3);
       cy.wrap(letters)
         .eq(3)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(4);
       cy.tick(DELAY_IN_MS);
       cy.wrap(letters)
         .eq(0)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(4);
       cy.wrap(letters)
         .eq(1)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(2);
       cy.wrap(letters)
         .eq(2)
-        .should("have.css", "border-color", changingColor)
+        .should(haveCss, borderColor, changingColor)
         .contains(3);
       cy.wrap(letters)
         .eq(3)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(1);
       cy.tick(DELAY_IN_MS);
       cy.wrap(letters)
         .eq(0)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(4);
       cy.wrap(letters)
         .eq(1)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(3);
       cy.wrap(letters)
         .eq(2)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(2);
       cy.wrap(letters)
         .eq(3)
-        .should("have.css", "border-color", modifiedColor)
+        .should(haveCss, borderColor, modifiedColor)
         .contains(1);
     });
   });

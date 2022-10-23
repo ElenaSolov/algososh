@@ -1,5 +1,7 @@
 import {
   addButtonSelector,
+  beDisabled,
+  borderColor,
   changingColor,
   circleContentSelector,
   circleHeadSelector,
@@ -8,6 +10,9 @@ import {
   circleTailSelector,
   defaultColor,
   deleteButtonSelector,
+  emptyString,
+  haveCss,
+  haveText,
   inputSelector,
   resetButtonSelector,
 } from "../support/constants";
@@ -23,7 +28,7 @@ describe("Queue page", () => {
 
   it("Add button is disabled when input is empty", () => {
     cy.get(inputSelector).clear();
-    cy.get(addButtonSelector).should("be.disabled");
+    cy.get(addButtonSelector).should(beDisabled);
   });
   it("Elements are added to the stack correctly", () => {
     cy.clock();
@@ -33,22 +38,22 @@ describe("Queue page", () => {
       cy.get(circleSelector).then((nums) => {
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", changingColor)
-          .should("have.text", "");
+          .should(haveCss, borderColor, changingColor)
+          .should(haveText, emptyString);
       });
       cy.tick(DELAY_IN_MS);
       cy.get(circleContentSelector).then((nums) => {
         cy.wrap(nums)
           .eq(i)
           .find(circleHeadSelector)
-          .should("have.text", i === 0 ? HEAD : "");
+          .should(haveText, i === 0 ? HEAD : emptyString);
         cy.wrap(nums).eq(i).find(circleTailSelector).contains(TAIL);
         cy.wrap(nums).eq(i).find(circleIndexSelector).contains(i.toString());
       });
       cy.get(circleSelector).then((nums) => {
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", changingColor)
+          .should(haveCss, borderColor, changingColor)
           .contains(arrayToAdd[i].toString());
       });
       cy.tick(DELAY_IN_MS);
@@ -67,10 +72,10 @@ describe("Queue page", () => {
       for (let i = 0; i < maxArrayLength; i++) {
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", defaultColor)
+          .should(haveCss, borderColor, defaultColor)
           .should(
-            "have.text",
-            i < arrayToAdd.length ? arrayToAdd[i].toString() : ""
+            haveText,
+            i < arrayToAdd.length ? arrayToAdd[i].toString() : emptyString
           );
       }
       for (let i = 0; i < arrayToAdd.length; i++) {
@@ -78,16 +83,16 @@ describe("Queue page", () => {
         cy.get(circleSelector).then((nums) => {
           cy.wrap(nums)
             .eq(i)
-            .should("have.css", "border-color", changingColor)
-            .should("have.text", arrayToAdd[i].toString());
+            .should(haveCss, borderColor, changingColor)
+            .should(haveText, arrayToAdd[i].toString());
         });
         cy.tick(SHORT_DELAY_IN_MS);
         cy.tick(SHORT_DELAY_IN_MS);
         cy.get(circleSelector).then((nums) => {
           cy.wrap(nums)
             .eq(i)
-            .should("have.css", "border-color", defaultColor)
-            .should("have.text", "");
+            .should(haveCss, borderColor, defaultColor)
+            .should(haveText, emptyString);
         });
         cy.get(circleContentSelector).then((nums) => {
           cy.wrap(nums)
@@ -95,10 +100,10 @@ describe("Queue page", () => {
             .contains(HEAD);
         });
       }
-      cy.get(deleteButtonSelector).should("be.disabled");
+      cy.get(deleteButtonSelector).should(beDisabled);
       cy.get(circleSelector).then((nums) => {
         for (let i = 0; i < maxArrayLength; i++) {
-          cy.wrap(nums).eq(i).should("have.text", "");
+          cy.wrap(nums).eq(i).should(haveText, emptyString);
         }
       });
     });
@@ -116,17 +121,17 @@ describe("Queue page", () => {
       for (let i = 0; i < maxArrayLength; i++) {
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", defaultColor)
+          .should(haveCss, borderColor, defaultColor)
           .should(
-            "have.text",
-            i < arrayToAdd.length ? arrayToAdd[i].toString() : ""
+            haveText,
+            i < arrayToAdd.length ? arrayToAdd[i].toString() : emptyString
           );
       }
     });
     cy.get(resetButtonSelector).click();
     cy.get(circleSelector).then((nums) => {
       for (let i = 0; i < maxArrayLength; i++) {
-        cy.wrap(nums).eq(i).should("have.text", "");
+        cy.wrap(nums).eq(i).should(haveText, emptyString);
       }
     });
   });

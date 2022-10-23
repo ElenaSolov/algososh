@@ -1,6 +1,8 @@
 import {
+  borderColor,
   circleSelector,
   defaultColor,
+  haveCss,
   inputSelector,
   submitBtnSelector,
 } from "../support/constants";
@@ -27,7 +29,7 @@ describe("Spring page", () => {
         expect(nums).to.have.length(i + 1);
         cy.wrap(nums)
           .eq(i)
-          .should("have.css", "border-color", defaultColor)
+          .should(haveCss, borderColor, defaultColor)
           .contains(fibonacciOrder[i]);
       });
       cy.tick(DELAY_IN_MS);

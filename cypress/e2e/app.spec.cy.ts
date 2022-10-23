@@ -1,9 +1,9 @@
 describe("application and navigation is available", function () {
   beforeEach(() => {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
   });
   it("should be available on localhost:3000", function () {
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
   });
   it("fibonacci-page is available", () => {
     cy.get('a[href*="fibonacci"]').click();
