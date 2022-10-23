@@ -2,6 +2,7 @@ import { Button } from "./button";
 import React from "react";
 import renderer from "react-test-renderer";
 import { render, fireEvent, screen } from "@testing-library/react";
+import { Direction } from "../../../types/direction";
 
 describe("Button rendered correctly", () => {
   it("Button without text rendered correctly", () => {
@@ -22,6 +23,26 @@ describe("Button rendered correctly", () => {
     const button = renderer
       .create(<Button text="Test" isLoader={true} />)
       .toJSON();
+    expect(button).toMatchSnapshot();
+  });
+  it("Ascending sorting icon rendered correctly", () => {
+    const button = renderer
+      .create(
+        <Button sorting={Direction.Ascending} />
+      )
+      .toJSON();
+    expect(button).toMatchSnapshot();
+  });
+  it("Descending sorting icon rendered correctly", () => {
+    const button = renderer
+      .create(
+        <Button sorting={Direction.Descending} />
+      )
+      .toJSON();
+    expect(button).toMatchSnapshot();
+  });
+  it("Button without sorting icon rendered correctly", () => {
+    const button = renderer.create(<Button />).toJSON();
     expect(button).toMatchSnapshot();
   });
   it("Button click fires callback", () => {
