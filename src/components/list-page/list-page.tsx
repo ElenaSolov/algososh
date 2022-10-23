@@ -127,10 +127,11 @@ export const ListPage: React.FC = () => {
       }
       setArray(list.toArray());
     }
-  }, []);
+  }, []); // eslint-disable-line
+
   useEffect(() => {
     toMark();
-  }, [array.length]);
+  }, [array.length]); // eslint-disable-line
 
   return (
     <SolutionLayout title="Связный список">
