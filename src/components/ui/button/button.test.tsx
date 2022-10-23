@@ -27,22 +27,26 @@ describe("Button rendered correctly", () => {
   });
   it("Ascending sorting icon rendered correctly", () => {
     const button = renderer
-      .create(
-        <Button sorting={Direction.Ascending} />
-      )
+      .create(<Button sorting={Direction.Ascending} />)
       .toJSON();
     expect(button).toMatchSnapshot();
   });
   it("Descending sorting icon rendered correctly", () => {
     const button = renderer
-      .create(
-        <Button sorting={Direction.Descending} />
-      )
+      .create(<Button sorting={Direction.Descending} />)
       .toJSON();
     expect(button).toMatchSnapshot();
   });
   it("Button without sorting icon rendered correctly", () => {
     const button = renderer.create(<Button />).toJSON();
+    expect(button).toMatchSnapshot();
+  });
+  it("Button linkedList small rendered correctly", () => {
+    const button = renderer.create(<Button linkedList="small" />).toJSON();
+    expect(button).toMatchSnapshot();
+  });
+  it("Button linkedList big rendered correctly", () => {
+    const button = renderer.create(<Button linkedList="big" />).toJSON();
     expect(button).toMatchSnapshot();
   });
   it("Button click fires callback", () => {

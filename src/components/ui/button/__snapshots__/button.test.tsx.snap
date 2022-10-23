@@ -24,6 +24,28 @@ exports[`Button rendered correctly Ascending sorting icon rendered correctly 1`]
 </button>
 `;
 
+exports[`Button rendered correctly Button linkedList big rendered correctly 1`] = `
+<button
+  className="text text_type_button text_color_primary button big false "
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;
+
+exports[`Button rendered correctly Button linkedList small rendered correctly 1`] = `
+<button
+  className="text text_type_button text_color_primary button small false "
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;
+
 exports[`Button rendered correctly Button with text rendered correctly 1`] = `
 <button
   className="text text_type_button text_color_primary button undefined false "
