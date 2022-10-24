@@ -10,11 +10,9 @@ import { Circle } from "../ui/circle/circle";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import Queue, { IQueue } from "../../classes/Queue";
 import { HEAD, TAIL } from "../../constants/element-captions";
-import { NOT_VALUED } from "../../constants/initialValues";
+import { maxArrayLength, NOT_VALUED } from "../../constants/initialValues";
 
 export const QueuePage: React.FC = () => {
-  const maxArrayLength = 7;
-
   const [inputValue, setInputValue] = useState(NOT_VALUED);
   const [queue] = useState<IQueue<string>>(new Queue<string>(maxArrayLength));
   const [array, setArray] = useState<Array<string | undefined>>([]);
@@ -88,6 +86,7 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
+          extraClass="cyAddButton"
           disabled={
             queue.getTail() === maxArrayLength - 1 || inputValue === NOT_VALUED
           }
@@ -97,6 +96,7 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Удалить"
+          extraClass="cyDeleteButton"
           onClick={dequeue}
           disabled={
             queue.getTail() === -1 ||
@@ -110,7 +110,7 @@ export const QueuePage: React.FC = () => {
         <Button
           type="button"
           text="Очистить"
-          extraClass={stackStyles.resetBtn}
+          extraClass={`${stackStyles.resetBtn} cyResetButton`}
           onClick={reset}
           disabled={queue.getTail() === -1}
         />

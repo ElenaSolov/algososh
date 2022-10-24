@@ -15,6 +15,9 @@ export const MainPage: React.FC<MainPageProps> = ({ extraClass = "" }) => {
         <h1 className={`text text_type_h1 text_color_h1 ${styles.title}`}>
           МБОУ АЛГОСОШ
         </h1>
+        <p>
+          React Version is : <strong>{React.version}</strong>
+        </p>
         <p
           className={`text text_type_fibonacci text_color_secondary ${styles.fibonacci_title}`}
         >
