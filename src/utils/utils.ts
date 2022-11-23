@@ -33,6 +33,7 @@ export function* bubbleSort(
 ) {
   const { length } = array;
   let arr = array.slice();
+  if (length <= 1) yield { arr: array, i: 0, k: 0 };
   for (let i = 0; i < length - 1; i++) {
     for (let k = 0; k < length - i - 1; k++) {
       if (
@@ -51,6 +52,7 @@ export function* selectionSort(
 ) {
   const { length } = array;
   let arr = array.slice();
+  if (length <= 1) yield { arr: array, i: 0, k: 0 };
   let i, k: number;
   for (i = 0; i < length; i++) {
     let min: number = i;

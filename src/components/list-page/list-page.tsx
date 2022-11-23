@@ -66,6 +66,7 @@ export const ListPage: React.FC = () => {
     if (array[i] === node && addIndex >= 0) {
       return (
         <Circle
+          extraClass="cyHeadCircle"
           letter={numValue}
           state={ElementStates.Changing}
           isSmall={true}
@@ -75,6 +76,7 @@ export const ListPage: React.FC = () => {
     if (node === list.getHead()) {
       return addIndex === 0 ? (
         <Circle
+          extraClass="cyTailCircle"
           letter={numValue}
           state={ElementStates.Changing}
           isSmall={true}
@@ -125,10 +127,11 @@ export const ListPage: React.FC = () => {
       }
       setArray(list.toArray());
     }
-  }, []);
+  }, []); // eslint-disable-line
+
   useEffect(() => {
     toMark();
-  }, [array.length]);
+  }, [array.length]); // eslint-disable-line
 
   return (
     <SolutionLayout title="Связный список">
@@ -138,6 +141,7 @@ export const ListPage: React.FC = () => {
       >
         <Input
           autoFocus
+          extraClass="cyValueInput"
           placeholder="Введите значение"
           value={numValue}
           type="number"
@@ -149,6 +153,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в head"
+          extraClass="cyAddToHeadButton"
           disabled={numValue === NOT_VALUED || array.length >= maxArrLength}
           onClick={async () => {
             setAddIndex(0);
@@ -166,6 +171,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить в tail"
+          extraClass="cyAddToTailButton"
           onClick={async () => {
             setAddIndex(array.length);
             if (array.length > 0) {
@@ -185,6 +191,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить из head"
+          extraClass="cyDeleteFromHeadButton"
           onClick={async () => {
             setDeleteIndex(0);
             await wait(SHORT_DELAY_IN_MS);
@@ -198,6 +205,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить из tail"
+          extraClass="cyDeleteFromTailButton"
           onClick={async () => {
             setDeleteIndex(array.length - 1);
             await wait(SHORT_DELAY_IN_MS);
@@ -210,6 +218,7 @@ export const ListPage: React.FC = () => {
         />
         <p className={listStyles.text}>Максимум — 4 символа</p>
         <Input
+          extraClass="cyIndexInput"
           placeholder="Введите индекс"
           value={indexValue}
           type="number"
@@ -220,7 +229,7 @@ export const ListPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить по индексу"
-          extraClass={listStyles.addBtn}
+          extraClass={`${listStyles.addBtn} cyAddByIndexButton`}
           disabled={
             numValue === NOT_VALUED ||
             indexValue === NOT_VALUED ||
@@ -248,7 +257,7 @@ export const ListPage: React.FC = () => {
           isLoader={deleteIndex > 0 && deleteIndex < array.length - 1}
           type="button"
           text="Удалить по индексу"
-          extraClass={listStyles.deleteBtn}
+          extraClass={`${listStyles.deleteBtn} cyDeleteByIndexButton`}
           disabled={
             indexValue === NOT_VALUED ? true : getDisabledStatus("delete")
           }
@@ -272,6 +281,7 @@ export const ListPage: React.FC = () => {
           {array.map((node, index) => (
             <li className={listStyles.item} key={index}>
               <Circle
+                extraClass="cyListElement"
                 head={getHead(node)}
                 tail={getTail(node)}
                 state={node.state}

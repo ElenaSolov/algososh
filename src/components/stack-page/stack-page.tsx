@@ -78,6 +78,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Добавить"
+          extraClass="cyAddButton"
           disabled={inputValue === NOT_VALUED}
           onClick={addValue}
           isLoader={!done}
@@ -85,6 +86,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Удалить"
+          extraClass="cyDeleteButton"
           onClick={deleteValue}
           disabled={array.length <= 0}
           isLoader={!done}
@@ -92,7 +94,7 @@ export const StackPage: React.FC = () => {
         <Button
           type="button"
           text="Очистить"
-          extraClass={stackStyles.resetBtn}
+          extraClass={`${stackStyles.resetBtn} cyResetButton`}
           onClick={reset}
           disabled={array.length <= 0}
         />

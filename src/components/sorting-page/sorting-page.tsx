@@ -134,6 +134,8 @@ export const SortingPage: React.FC = () => {
           disabled={!done}
         />
       </div>
+      {/*<p>{array.toString()}</p>*/}
+      {/*<p>{array.sort((a: number, b: number) => b - a).toString()}</p>*/}
       <ul className={sortingStyles.output}>
         {array.map((el, index) => (
           <li className={sortingStyles.item} key={index}>
